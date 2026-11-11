@@ -346,15 +346,15 @@ export default function VarmalaScene() {
           className="varmala-downside-narrative"
           style={{
             width: '100%',
-            maxWidth: 'min(780px, 94vw)',
-            minHeight: 'clamp(95px, 18vh, 140px)',
+            maxWidth: 'min(840px, 94vw)',
+            minHeight: 'clamp(136px, 23vh, 198px)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            marginTop: 'clamp(8px, 1.6vh, 16px)',
+            marginTop: 'clamp(18px, 3.4vh, 36px)',
             position: 'relative',
-            padding: '0 12px',
+            padding: '8px 12px 0',
             boxSizing: 'border-box',
           }}
         >
@@ -362,7 +362,7 @@ export default function VarmalaScene() {
           <motion.div
             style={{
               position: 'absolute',
-              top: '50%',
+              top: '56%',
               left: 0,
               right: 0,
               y: '-50%',
@@ -374,22 +374,24 @@ export default function VarmalaScene() {
             <h2
               className="editorial-display"
               style={{
-                fontSize: 'clamp(1.25rem, 3.8vw, 1.9rem)',
+                fontSize: 'clamp(1.42rem, calc(1.05rem + 1.9vw), 2.35rem)',
+                lineHeight: 1.2,
                 color: '#FFF2D6',
                 fontWeight: 600,
                 letterSpacing: '0.06em',
-                margin: '2px 0 4px',
+                margin: '2px 0 6px',
                 textShadow: '0 2px 10px rgba(0,0,0,0.8)',
               }}
             >
               The Sacred Varmala Ceremony
             </h2>
-            <OrnamentalDivider width="min(180px, 40%)" style={{ margin: '2px auto 6px' }} />
+            <OrnamentalDivider width="min(200px, 44%)" style={{ margin: '4px auto 8px' }} />
             <p
               style={{
                 fontFamily: 'var(--font-editorial)',
                 fontStyle: 'italic',
-                fontSize: 'clamp(1.02rem, 3vw, 1.2rem)',
+                fontSize: 'clamp(1.1rem, calc(0.95rem + 0.8vw), 1.44rem)',
+                lineHeight: 1.35,
                 color: '#F8E7C0',
                 margin: 0,
               }}
@@ -402,7 +404,7 @@ export default function VarmalaScene() {
           <motion.div
             style={{
               position: 'absolute',
-              top: '50%',
+              top: '56%',
               left: 0,
               right: 0,
               y: '-50%',
@@ -414,12 +416,12 @@ export default function VarmalaScene() {
             <div
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(0.78rem, 2vw, 0.9rem)',
+                fontSize: 'clamp(0.84rem, calc(0.75rem + 0.45vw), 1.06rem)',
                 letterSpacing: '0.18em',
                 color: 'var(--color-gold-light)',
                 textTransform: 'uppercase',
-                opacity: 0.9,
-                marginBottom: '3px',
+                opacity: 0.92,
+                marginBottom: '4px',
               }}
             >
               The Sacred Offering
@@ -427,22 +429,47 @@ export default function VarmalaScene() {
             <h2
               className="editorial-display"
               style={{
-                fontSize: 'clamp(1.25rem, 3.8vw, 1.9rem)',
                 color: '#FFF2D6',
-                fontWeight: 600,
-                letterSpacing: '0.06em',
                 margin: '2px 0 4px',
                 textShadow: '0 2px 10px rgba(0,0,0,0.8)',
               }}
             >
-              Chi. Vighnesh Adorns The Bride
+              <span
+                className="varmala-actor-name"
+                style={{
+                  display: 'block',
+                  fontSize: 'clamp(1.26rem, calc(-0.15rem + 7.1vw), 2.6rem)',
+                  fontWeight: 700,
+                  letterSpacing: 'clamp(0.025em, 0.08vw, 0.06em)',
+                  color: '#FFF6E3',
+                  lineHeight: 1.15,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Chi. {WEDDING_DETAILS.couple.groom.name}
+              </span>
+              <span
+                className="varmala-actor-action"
+                style={{
+                  display: 'block',
+                  marginTop: '4px',
+                  fontSize: 'clamp(1.12rem, calc(0.94rem + 1vw), 1.68rem)',
+                  fontWeight: 600,
+                  letterSpacing: '0.06em',
+                  color: '#F7E6C2',
+                  lineHeight: 1.2,
+                }}
+              >
+                Adorns The Bride
+              </span>
             </h2>
-            <OrnamentalDivider width="min(180px, 40%)" style={{ margin: '2px auto 6px' }} />
+            <OrnamentalDivider width="min(200px, 44%)" style={{ margin: '5px auto 7px' }} />
             <p
               style={{
                 fontFamily: 'var(--font-editorial)',
                 fontStyle: 'italic',
-                fontSize: 'clamp(1.02rem, 3vw, 1.2rem)',
+                fontSize: 'clamp(1.06rem, calc(0.92rem + 0.75vw), 1.38rem)',
+                lineHeight: 1.35,
                 color: '#F8E7C0',
                 margin: 0,
               }}
@@ -455,7 +482,7 @@ export default function VarmalaScene() {
           <motion.div
             style={{
               position: 'absolute',
-              top: '50%',
+              top: '56%',
               left: 0,
               right: 0,
               y: '-50%',
@@ -467,12 +494,12 @@ export default function VarmalaScene() {
             <div
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(0.78rem, 2vw, 0.9rem)',
+                fontSize: 'clamp(0.84rem, calc(0.75rem + 0.45vw), 1.06rem)',
                 letterSpacing: '0.18em',
                 color: 'var(--color-gold-light)',
                 textTransform: 'uppercase',
-                opacity: 0.9,
-                marginBottom: '3px',
+                opacity: 0.92,
+                marginBottom: '4px',
               }}
             >
               The Reciprocal Blessing
@@ -480,22 +507,47 @@ export default function VarmalaScene() {
             <h2
               className="editorial-display"
               style={{
-                fontSize: 'clamp(1.25rem, 3.8vw, 1.9rem)',
                 color: '#FFF2D6',
-                fontWeight: 600,
-                letterSpacing: '0.06em',
                 margin: '2px 0 4px',
                 textShadow: '0 2px 10px rgba(0,0,0,0.8)',
               }}
             >
-              Chi. Sou. Rashmitha Adorns The Groom
+              <span
+                className="varmala-actor-name"
+                style={{
+                  display: 'block',
+                  fontSize: 'clamp(1.26rem, calc(-0.15rem + 7.1vw), 2.6rem)',
+                  fontWeight: 700,
+                  letterSpacing: 'clamp(0.025em, 0.08vw, 0.06em)',
+                  color: '#FFF6E3',
+                  lineHeight: 1.15,
+                  whiteSpace: 'nowrap',
+                }}
+              >
+                Chi. Sou. {WEDDING_DETAILS.couple.bride.name}
+              </span>
+              <span
+                className="varmala-actor-action"
+                style={{
+                  display: 'block',
+                  marginTop: '4px',
+                  fontSize: 'clamp(1.12rem, calc(0.94rem + 1vw), 1.68rem)',
+                  fontWeight: 600,
+                  letterSpacing: '0.06em',
+                  color: '#F7E6C2',
+                  lineHeight: 1.2,
+                }}
+              >
+                Adorns The Groom
+              </span>
             </h2>
-            <OrnamentalDivider width="min(180px, 40%)" style={{ margin: '2px auto 6px' }} />
+            <OrnamentalDivider width="min(200px, 44%)" style={{ margin: '5px auto 7px' }} />
             <p
               style={{
                 fontFamily: 'var(--font-editorial)',
                 fontStyle: 'italic',
-                fontSize: 'clamp(1.02rem, 3vw, 1.2rem)',
+                fontSize: 'clamp(1.06rem, calc(0.92rem + 0.75vw), 1.38rem)',
+                lineHeight: 1.35,
                 color: '#F8E7C0',
                 margin: 0,
               }}
@@ -511,6 +563,7 @@ export default function VarmalaScene() {
               y: namesY,
               scale: namesScale,
               width: '100%',
+              marginTop: 'clamp(10px, 1.8vh, 20px)',
               textAlign: 'center',
               display: 'flex',
               flexDirection: 'column',
@@ -522,12 +575,12 @@ export default function VarmalaScene() {
               className="sanskrit-text"
               style={{
                 color: 'var(--color-gold-light)',
-                fontSize: 'clamp(0.9rem, 2.5vw, 1.06rem)',
+                fontSize: 'clamp(0.98rem, calc(0.84rem + 0.6vw), 1.22rem)',
                 lineHeight: 1.4,
                 fontWeight: 500,
                 fontStyle: 'italic',
-                margin: '0 0 3px',
-                maxWidth: '620px',
+                margin: '0 0 5px',
+                maxWidth: '680px',
               }}
             >
               {WEDDING_DETAILS.shlokas.varmalaShloka}
@@ -538,12 +591,12 @@ export default function VarmalaScene() {
               className="couple-grand-title"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(1.04rem, 4.3vw, 2.25rem)',
+                fontSize: 'clamp(1.16rem, calc(0.55rem + 3.05vw), 2.75rem)',
                 fontWeight: 700,
-                letterSpacing: 'clamp(0.03em, 0.16vw, 0.16em)',
+                letterSpacing: 'clamp(0.02em, 0.14vw, 0.15em)',
                 color: 'var(--color-gold-light)',
                 textTransform: 'uppercase',
-                margin: '1px 0 3px',
+                margin: '2px 0 4px',
                 textShadow:
                   '0 2px 14px rgba(223, 186, 115, 0.4), 0 4px 28px rgba(0, 0, 0, 0.9)',
                 whiteSpace: 'nowrap',
@@ -552,12 +605,12 @@ export default function VarmalaScene() {
               {WEDDING_DETAILS.couple.groom.name} &amp; {WEDDING_DETAILS.couple.bride.name}
             </h1>
 
-            <OrnamentalDivider width="min(220px, 50%)" style={{ margin: '2px auto 4px' }} />
+            <OrnamentalDivider width="min(240px, 52%)" style={{ margin: '3px auto 6px' }} />
 
             <p
               style={{
                 fontFamily: 'var(--font-editorial)',
-                fontSize: 'clamp(0.92rem, 2.6vw, 1.08rem)',
+                fontSize: 'clamp(1rem, calc(0.86rem + 0.6vw), 1.26rem)',
                 color: 'var(--color-cream)',
                 fontStyle: 'italic',
                 margin: 0,
