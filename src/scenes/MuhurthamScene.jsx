@@ -69,20 +69,21 @@ export default function MuhurthamScene() {
   const timeY = useTransform(localProgress, [0.52, 0.66], [12, 0]);
 
   // ========================================================
-  // STAGE 4: MAKARA LAGNAM (0.66 – 0.84)
+  // STAGE 4: MAKARA LAGNAM (0.66 – 0.80)
   // ========================================================
-  const lagnamContainerOpacity = useTransform(localProgress, [0.66, 0.76], [0, 1]);
-  const lagnamContainerY = useTransform(localProgress, [0.66, 0.76], [12, 0]);
+  const lagnamContainerOpacity = useTransform(localProgress, [0.66, 0.74], [0, 1]);
+  const lagnamContainerY = useTransform(localProgress, [0.66, 0.74], [12, 0]);
 
-  const lagnamOpacity = useTransform(localProgress, [0.68, 0.82], [0, 1]);
-  const lagnamScale = useTransform(localProgress, [0.68, 0.82], [0.92, 1.0]);
-  const lagnamY = useTransform(localProgress, [0.68, 0.82], [10, 0]);
+  const lagnamOpacity = useTransform(localProgress, [0.68, 0.79], [0, 1]);
+  const lagnamScale = useTransform(localProgress, [0.68, 0.79], [0.92, 1.0]);
+  const lagnamY = useTransform(localProgress, [0.68, 0.79], [10, 0]);
 
   // ========================================================
-  // STAGE 5: FINAL COMPOSITION ACTIONS (0.82 – 1.00)
+  // STAGE 5: FINAL COMPOSITION ACTIONS (0.76 – 0.85)
+  // Complete before scene exit fade (0.90) & read-dwell gate
   // ========================================================
-  const calendarActionsOpacity = useTransform(localProgress, [0.82, 0.94], [0, 1]);
-  const calendarActionsY = useTransform(localProgress, [0.82, 0.94], [10, 0]);
+  const calendarActionsOpacity = useTransform(localProgress, [0.76, 0.85], [0, 1]);
+  const calendarActionsY = useTransform(localProgress, [0.76, 0.85], [10, 0]);
 
   // Google Calendar URL (26 Nov 2026, 11:15 AM IST / 05:45 UTC)
   const googleCalUrl =
@@ -248,12 +249,12 @@ export default function MuhurthamScene() {
               aria-label="Add wedding date to Google Calendar"
               style={{
                 flex: isCompact ? '1 1 0' : '0 0 auto',
-                minHeight: isCompact ? (isShortViewport ? '38px' : '42px') : 'auto',
+                minHeight: isCompact ? (isShortViewport ? '38px' : '42px') : '40px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '6px',
-                padding: isCompact ? '7px 10px' : '7px 14px',
+                padding: isCompact ? '8px 10px' : '9px 16px',
                 whiteSpace: 'nowrap',
                 background: 'rgba(182, 138, 67, 0.18)',
                 border: '1px solid var(--color-antique-gold)',
@@ -293,12 +294,12 @@ export default function MuhurthamScene() {
               aria-label="Download Apple Calendar / iCal event"
               style={{
                 flex: isCompact ? '1 1 0' : '0 0 auto',
-                minHeight: isCompact ? (isShortViewport ? '38px' : '42px') : 'auto',
+                minHeight: isCompact ? (isShortViewport ? '38px' : '42px') : '40px',
                 display: 'inline-flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '6px',
-                padding: isCompact ? '7px 10px' : '7px 14px',
+                padding: isCompact ? '8px 10px' : '9px 16px',
                 whiteSpace: 'nowrap',
                 background: 'rgba(245, 229, 192, 0.08)',
                 border: '1px solid rgba(182, 138, 67, 0.45)',
