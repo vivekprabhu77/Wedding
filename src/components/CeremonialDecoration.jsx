@@ -28,7 +28,7 @@ export function Kuthuvillakku({ side = 'left', glowIntensity = 1, style = {} }) 
         viewBox="0 0 60 220"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ width: '100%', height: 'auto', filter: 'drop-shadow(0 4px 12px rgba(0,0,0,0.45))' }}
+        style={{ width: '100%', height: 'auto' }}
       >
         <defs>
           <linearGradient id={`goldGrad-${side}`} x1="0%" y1="0%" x2="100%" y2="100%">
@@ -118,7 +118,6 @@ export function PurnaKalashaMedallion({ size = 52, style = {} }) {
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
-        filter: 'drop-shadow(0 2px 8px rgba(182, 138, 67, 0.4))',
         ...style,
       }}
       aria-hidden="true"

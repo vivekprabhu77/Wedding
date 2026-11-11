@@ -90,3 +90,15 @@
   }
 }
 
+/* ========================================================
+   GPU COMPOSITOR LAYER ISOLATION FOR ACTIVE SCENES
+   ======================================================== */
+.wedding-scene {
+  contain: layout style;
+}
+
+.wedding-scene[style*="pointer-events: auto"] {
+  will-change: transform, opacity;
+}
+
+

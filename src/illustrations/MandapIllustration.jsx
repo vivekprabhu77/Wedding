@@ -33,7 +33,6 @@ export function MandapCanopyArch({ archOpacity, isCompact = false, isShortViewpo
           height: isCompact ? (isShortViewport ? '28px' : '38px') : 'auto',
           display: 'block',
           overflow: 'visible',
-          filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5))',
         }}
       >
         <defs>
@@ -241,7 +240,6 @@ export function MandapPillar({ side = 'left', isCompact = false, isUltraNarrow =
         style={{
           width: '100%',
           height: '100%',
-          filter: 'drop-shadow(0 6px 14px rgba(0, 0, 0, 0.5))',
         }}
       >
         <defs>
@@ -376,7 +374,7 @@ export function LocationRouteMotif({
           <circle cx="24" cy="33" r="1.8" fill="#F5E5C0" />
         </motion.g>
 
-        {/* Scroll-Animated Ceremonial Dotted Journey Arc */}
+        {/* Scroll-Animated Ceremonial Dotted Journey Arc (GPU transform, zero SVG stroke re-layout) */}
         <motion.path
           d="M34 33 C72 16 105 42 150 26 C168 19 182 22 198 31"
           stroke="#DFBA73"
@@ -384,7 +382,7 @@ export function LocationRouteMotif({
           strokeDasharray="3 4"
           strokeLinecap="round"
           fill="none"
-          style={{ pathLength: pathProgress, opacity: pinOpacity }}
+          style={{ scaleX: pathProgress, opacity: pinOpacity, transformOrigin: '34px 33px' }}
         />
 
         {/* Subtle destination halo ring */}

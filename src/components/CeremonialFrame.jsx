@@ -40,13 +40,11 @@ export default function CeremonialFrame({
           ? '1px solid rgba(223, 186, 115, 0.36)'
           : '1.5px solid rgba(182, 138, 67, 0.55)',
         background: isCompact
-          ? 'radial-gradient(ellipse at 50% 38%, rgba(248, 243, 233, 0.06) 0%, rgba(56, 14, 20, 0.52) 55%, rgba(30, 7, 11, 0.84) 100%)'
-          : 'radial-gradient(ellipse at 50% 36%, rgba(248, 243, 233, 0.08) 0%, rgba(74, 18, 26, 0.45) 45%, rgba(39, 8, 13, 0.88) 100%)',
+          ? 'radial-gradient(ellipse at 50% 38%, rgba(248, 243, 233, 0.06) 0%, rgba(56, 14, 20, 0.82) 55%, rgba(28, 7, 11, 0.94) 100%)'
+          : 'radial-gradient(ellipse at 50% 36%, rgba(248, 243, 233, 0.08) 0%, rgba(74, 18, 26, 0.78) 45%, rgba(35, 8, 12, 0.94) 100%)',
         boxShadow: isCompact
-          ? '0 16px 40px rgba(0, 0, 0, 0.6), inset 0 0 24px rgba(182, 138, 67, 0.08)'
-          : '0 24px 60px rgba(0, 0, 0, 0.75), inset 0 0 40px rgba(182, 138, 67, 0.1)',
-        backdropFilter: 'blur(8px)',
-        WebkitBackdropFilter: 'blur(8px)',
+          ? '0 14px 34px rgba(0, 0, 0, 0.58), inset 0 0 24px rgba(182, 138, 67, 0.08)'
+          : '0 20px 50px rgba(0, 0, 0, 0.7), inset 0 0 36px rgba(182, 138, 67, 0.1)',
         ...style,
       }}
     >

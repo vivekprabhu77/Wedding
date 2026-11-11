@@ -58,7 +58,6 @@ export default function BrideVarmala({
         position: 'relative',
         width: `${width}px`,
         height: `${height}px`,
-        filter: 'drop-shadow(0 16px 32px rgba(0, 0, 0, 0.45))',
         ...style,
       }}
       aria-label="Bride Chi. Sou. Rashmitha"

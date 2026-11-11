@@ -17,11 +17,22 @@ export default function GroomIllustration({
         display: 'inline-block',
         position: 'relative',
         width: typeof width === 'number' ? `${width}px` : width,
-        filter: 'drop-shadow(0 16px 32px rgba(0, 0, 0, 0.45))',
         ...style,
       }}
       aria-label="Groom Chi. Vighnesh"
     >
+      <div
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          bottom: '-1%',
+          left: '16%',
+          width: '68%',
+          height: '12px',
+          background: 'radial-gradient(ellipse at center, rgba(0, 0, 0, 0.42) 0%, transparent 72%)',
+          pointerEvents: 'none',
+        }}
+      />
       <img
         src="./illustrations/groom_editorial_transparent.png"
         alt="Groom Chi. Vighnesh"

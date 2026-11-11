@@ -17,28 +17,55 @@ import { useReducedMotion } from './useReducedMotion';
 const WeddingTimelineContext = createContext(null);
 
 const DEFAULT_CONTROLLER_CFG = {
-  transitionSmoothing: 10.5,
-  maxForwardVelocity: 0.095,
-  maxForwardVelocityByScene: {
-    opening: 0.105,
-    varmala: 0.085,
-    groom: 0.044,
-    bride: 0.044,
-    muhurtham: 0.052,
-    venue: 0.054,
-    blessings: 0.075,
+  cruiseVelocity: 0.048,
+  cruiseVelocityByScene: {
+    opening: 0.054,
+    varmala: 0.056,
+    groom: 0.042,
+    bride: 0.042,
+    muhurtham: 0.046,
+    venue: 0.048,
+    blessings: 0.056,
   },
-  maxReverseVelocity: 0.44,
-  directNavVelocity: 1.15,
-  maxSingleGestureAdvance: 0.16,
+  accelerationPerSec2: 0.22,
+  decelerationPerSec2: 0.24,
+  settleSmoothing: 12.0,
+  maxReverseVelocity: 0.52,
+  directNavVelocity: 1.25,
+  maxSingleGestureAdvance: 0.18,
   scenes: {
-    opening: { minPresentationMs: 1100, fullRevealLocal: 0.65, minReadDwellMs: 500 },
-    varmala: { minPresentationMs: 2400, fullRevealLocal: 0.84, minReadDwellMs: 950 },
-    groom: { minPresentationMs: 2350, fullRevealLocal: 0.84, minReadDwellMs: 950 },
-    bride: { minPresentationMs: 2350, fullRevealLocal: 0.84, minReadDwellMs: 950 },
-    muhurtham: { minPresentationMs: 2600, fullRevealLocal: 0.84, minReadDwellMs: 1100 },
-    venue: { minPresentationMs: 2700, fullRevealLocal: 0.84, minReadDwellMs: 1150 },
-    blessings: { minPresentationMs: 1500, fullRevealLocal: 0.75, minReadDwellMs: 600 },
+    opening: {
+      milestones: [{ id: 'opening-card', atLocal: 0.35, gateLocal: 0.70, minReadableMs: 1100 }],
+    },
+    varmala: {
+      milestones: [
+        { id: 'varmala-garlands', atLocal: 0.56, gateLocal: 0.64, minReadableMs: 850 },
+        { id: 'varmala-couple-names', atLocal: 0.87, gateLocal: 0.90, minReadableMs: 1700 },
+      ],
+    },
+    groom: {
+      milestones: [
+        { id: 'groom-hometown-udupi', atLocal: 0.80, gateLocal: 0.855, minReadableMs: 1850 },
+      ],
+    },
+    bride: {
+      milestones: [
+        { id: 'bride-hometown-udupi', atLocal: 0.80, gateLocal: 0.855, minReadableMs: 1850 },
+      ],
+    },
+    muhurtham: {
+      milestones: [
+        { id: 'muhurtham-full-schedule', atLocal: 0.85, gateLocal: 0.868, minReadableMs: 1850 },
+      ],
+    },
+    venue: {
+      milestones: [
+        { id: 'venue-full-directions', atLocal: 0.84, gateLocal: 0.865, minReadableMs: 1850 },
+      ],
+    },
+    blessings: {
+      milestones: [],
+    },
   },
 };
 
@@ -59,20 +86,6 @@ function findSceneIndex(p) {
   return SCENE_CONFIG.length - 1;
 }
 
-/**
- * Computes the scene exit protection gate right after full content reveal
- * and just before the scene's exit crossfade cliff.
- */
-function getSceneExitGate(scene, fullRevealLocal = 0.84) {
-  const [start, end] = scene.range;
-  if (end >= 1.0) return 1.0;
-  const duration = end - start;
-  const buffer = Math.min(0.018, duration * 0.12);
-  const crossfadeStart = end - buffer;
-  const minAfterReveal = start + duration * Math.min(0.92, fullRevealLocal + 0.06);
-  return Math.max(start + duration * 0.75, Math.min(crossfadeStart - 0.002, minAfterReveal));
-}
-
 function computeActiveMask(progress) {
   let mask = 0;
   for (let i = 0; i < SCENE_CONFIG.length; i += 1) {
@@ -87,9 +100,22 @@ function computeActiveMask(progress) {
 }
 
 /**
+ * Resolves scene exit boundary before crossfade starts in useSceneTimeline
+ * so no milestone gate ever lets content slip into exit dissolve prematurely.
+ */
+function getMaxSafeGateLocal(scene) {
+  const [start, end] = scene.range;
+  if (end >= 1.0) return 1.0;
+  const duration = Math.max(0.001, end - start);
+  const buffer = Math.min(0.018, duration * 0.12);
+  const crossfadeStartLocal = (duration - buffer) / duration;
+  return Math.max(0.5, crossfadeStartLocal - 0.012);
+}
+
+/**
  * Provider component wrapping the cinematic viewport.
- * Acts as the single authoritative timeline-progress controller between raw
- * browser/Lenis scroll input and Framer Motion scene choreography.
+ * Acts as the single authoritative DT-driven cinematic playback engine between
+ * raw user scroll intent and Framer Motion scene choreography.
  */
 export function WeddingTimelineProvider({ scrollYProgress, children }) {
   // Support deterministic visual testing via window.__MOCK_PROGRESS__, hash (#0.XX), or ?mockProgress=0.XX
@@ -116,19 +142,18 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
 
   const activeMotionValue = mockParam !== null ? mockMotionValue : controlledProgress;
 
-  const [activeSceneIndex, setActiveSceneIndex] = useState(() => findSceneIndex(initialRaw));
+  // Only publish scene visibility bitmask to React context (avoids 60fps React re-renders during scroll)
   const [activeMask, setActiveMask] = useState(() => computeActiveMask(initialRaw));
-  const [currentProgress, setCurrentProgress] = useState(initialRaw);
 
   const stateRef = useRef({
     displayed: initialRaw,
     prevRawTarget: initialRaw,
     controlledTarget: initialRaw,
+    velocity: 0,
     lastTime: typeof performance !== 'undefined' ? performance.now() : 0,
     lastRawChangeAt: typeof performance !== 'undefined' ? performance.now() : 0,
     sceneIndex: findSceneIndex(initialRaw),
-    sceneEnteredAt: typeof performance !== 'undefined' ? performance.now() : 0,
-    fullRevealReachedAt: null,
+    milestoneReachedAt: [],
     lastWheelAt: -Infinity,
     lastTouchAt: -Infinity,
     lastStepKeyAt: -Infinity,
@@ -138,25 +163,30 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
     lastInputDir: 0,
     lastTouchY: null,
     gestureAnchor: initialRaw,
+    pendingBottomWheelAt: -Infinity,
     isTouching: false,
     isScrollbarPointerDown: false,
     reconcilingTo: 0,
     reconcilingUntil: -Infinity,
     lastPublishedMask: computeActiveMask(initialRaw),
-    lastPublishedSceneIdx: findSceneIndex(initialRaw),
-    lastPublishedProgress: initialRaw,
   });
 
-  // Track raw input intent & direction across wheel, trackpad, touch, keyboard, and scrollbar
+  // Track raw user scroll intent & direction across wheel, trackpad, touch, keyboard, and scrollbar
   useEffect(() => {
     if (mockParam !== null || typeof window === 'undefined') return undefined;
 
     const handleWheel = (e) => {
       const st = stateRef.current;
-      st.lastWheelAt = performance.now();
+      const now = performance.now();
+      st.lastWheelAt = now;
       st.activeDirectNav = false;
       if (e.deltaY !== 0) {
-        st.lastInputDir = Math.sign(e.deltaY);
+        const dir = Math.sign(e.deltaY);
+        st.lastInputDir = dir;
+        if (dir > 0 && st.prevRawTarget >= 0.994) {
+          // Track active forward scrolling even when DOM hit the 100% scroll floor
+          st.pendingBottomWheelAt = now;
+        }
       }
     };
 
@@ -166,7 +196,6 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
       st.isTouching = true;
       st.lastTouchAt = now;
       st.activeDirectNav = false;
-      // Snapshot controlled progress at gesture start so one single aggressive swipe has a bounded advance
       st.gestureAnchor = st.controlledTarget;
       if (e.touches && e.touches.length > 0) {
         st.lastTouchY = e.touches[0].clientY;
@@ -185,6 +214,9 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
           const dy = st.lastTouchY - curY; // Positive = swiping finger up (advancing story forward)
           if (Math.abs(dy) > 1) {
             st.lastInputDir = Math.sign(dy);
+            if (dy > 0 && st.prevRawTarget >= 0.994) {
+              st.pendingBottomWheelAt = now;
+            }
           }
         }
         st.lastTouchY = curY;
@@ -205,6 +237,7 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
         st.lastStepKeyAt = now;
         st.activeDirectNav = false;
         st.lastInputDir = 1;
+        if (st.prevRawTarget >= 0.994) st.pendingBottomWheelAt = now;
       } else if (e.key === 'PageUp' || e.key === 'ArrowUp') {
         st.lastStepKeyAt = now;
         st.activeDirectNav = false;
@@ -213,6 +246,7 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
         st.lastStepKeyAt = now;
         st.activeDirectNav = false;
         st.lastInputDir = e.shiftKey ? -1 : 1;
+        if (!e.shiftKey && st.prevRawTarget >= 0.994) st.pendingBottomWheelAt = now;
       } else if (e.key === 'End') {
         st.lastJumpKeyAt = now;
         st.activeDirectNav = true;
@@ -227,8 +261,8 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
     const handlePointerDown = (e) => {
       const st = stateRef.current;
       const docWidth = document.documentElement.clientWidth;
-      // Only treat non-touch clicks directly on the right scrollbar edge as direct scrollbar drags
-      if (e.pointerType !== 'touch' && e.clientX >= docWidth - 6) {
+      const scrollbarMargin = Math.max(18, window.innerWidth - docWidth + 4);
+      if (e.pointerType !== 'touch' && e.clientX >= window.innerWidth - scrollbarMargin) {
         st.isScrollbarPointerDown = true;
         st.activeDirectNav = true;
         st.lastScrollbarAt = performance.now();
@@ -262,41 +296,33 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
     };
   }, [mockParam]);
 
-  // Helper to publish state only on scene transitions or meaningful progress deltas
-  const publishControlled = useMemo(
+  // Helper to flip scene active visibility bitmask only when crossing scene boundaries
+  const syncActiveMask = useMemo(
     () => (val) => {
       const st = stateRef.current;
       const mask = computeActiveMask(val);
-      const idx = val >= 1.0 ? SCENE_CONFIG.length - 1 : findSceneIndex(val);
-
       if (mask !== st.lastPublishedMask) {
         st.lastPublishedMask = mask;
         setActiveMask(mask);
-      }
-      if (idx !== st.lastPublishedSceneIdx) {
-        st.lastPublishedSceneIdx = idx;
-        setActiveSceneIndex(idx);
-      }
-      if (Math.abs(val - st.lastPublishedProgress) >= 0.015 || val === 0 || val === 1) {
-        st.lastPublishedProgress = val;
-        setCurrentProgress(val);
       }
     },
     []
   );
 
-  // Reduced-motion direct tracking mode (instant 1:1 follow without smoothing delay)
+  // Reduced-motion direct tracking mode (instant 1:1 follow without velocity gating)
   useMotionValueEvent(scrollYProgress, 'change', (latest) => {
     if (mockParam !== null || !prefersReducedMotion) return;
     const clamped = clamp01(latest);
-    stateRef.current.displayed = clamped;
-    stateRef.current.controlledTarget = clamped;
-    stateRef.current.prevRawTarget = clamped;
+    const st = stateRef.current;
+    st.displayed = clamped;
+    st.controlledTarget = clamped;
+    st.prevRawTarget = clamped;
+    st.velocity = 0;
     controlledProgress.set(clamped);
-    publishControlled(clamped);
+    syncActiveMask(clamped);
   });
 
-  // Subscribe to the single root Lenis animation frame loop
+  // Authoritative single-RAF animation engine (runs in lockstep with SmoothScroll Lenis)
   useEffect(() => {
     if (mockParam !== null || prefersReducedMotion || !subscribeFrame) {
       return undefined;
@@ -306,9 +332,9 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
     const cfg = {
       ...DEFAULT_CONTROLLER_CFG,
       ...userCtrl,
-      maxForwardVelocityByScene: {
-        ...DEFAULT_CONTROLLER_CFG.maxForwardVelocityByScene,
-        ...(userCtrl.maxForwardVelocityByScene || {}),
+      cruiseVelocityByScene: {
+        ...DEFAULT_CONTROLLER_CFG.cruiseVelocityByScene,
+        ...(userCtrl.cruiseVelocityByScene || {}),
       },
       scenes: {
         ...DEFAULT_CONTROLLER_CFG.scenes,
@@ -323,15 +349,16 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
     st.prevRawTarget = rawNow;
     st.controlledTarget = rawNow;
     st.gestureAnchor = rawNow;
+    st.velocity = 0;
     st.lastTime = nowInit;
     st.lastRawChangeAt = nowInit;
     st.sceneIndex = findSceneIndex(rawNow);
-    st.sceneEnteredAt = nowInit;
+
     const initScene = SCENE_CONFIG[st.sceneIndex];
-    const initSpan = initScene ? initScene.range[1] - initScene.range[0] : 0.12;
-    const initLocal = initScene ? clamp01((rawNow - initScene.range[0]) / Math.max(0.001, initSpan)) : 0;
-    const initReveal = cfg.scenes[initScene?.id]?.fullRevealLocal ?? 0.65;
-    st.fullRevealReachedAt = initLocal >= initReveal ? nowInit : null;
+    const initSpan = initScene ? Math.max(0.001, initScene.range[1] - initScene.range[0]) : 0.12;
+    const initLocal = initScene ? clamp01((rawNow - initScene.range[0]) / initSpan) : 0;
+    const initMilestones = cfg.scenes[initScene?.id]?.milestones || [];
+    st.milestoneReachedAt = initMilestones.map((m) => (initLocal >= m.atLocal ? nowInit : null));
 
     const reconcileLenisToTarget = (activeLenisObj, targetVal, now) => {
       if (!activeLenisObj || activeLenisObj.limit <= 0) return;
@@ -350,10 +377,12 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
       const dt = Math.min(0.05, Math.max(0.001, (now - st.lastTime) / 1000));
       st.lastTime = now;
 
+      // ------------------------------------------------------------------
+      // LAYER 1: RAW SCROLL INPUT DELTA EXTRACTION
+      // ------------------------------------------------------------------
       const rawTarget = clamp01(scrollYProgress.get() || 0);
       let deltaRaw = rawTarget - st.prevRawTarget;
 
-      // Ignore synthetic delta triggered when silently aligning DOM track with controlled target
       if (now < st.reconcilingUntil && Math.abs(rawTarget - st.reconcilingTo) < 0.04) {
         deltaRaw = 0;
       } else if (Math.abs(deltaRaw) > 0.0001) {
@@ -361,10 +390,12 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
       }
       st.prevRawTarget = rawTarget;
 
-      // Stage 2: Strict direct-nav classification (never falsely triggered by wheel/touch tails)
-      const recentWheel = now - st.lastWheelAt < 1800;
-      const recentTouch = st.isTouching || now - st.lastTouchAt < 3800;
-      const recentStepKey = now - st.lastStepKeyAt < 1500;
+      // ------------------------------------------------------------------
+      // LAYER 2: DIRECT NAV VS STORYTELLING INTENT CLASSIFICATION
+      // ------------------------------------------------------------------
+      const recentWheel = now - st.lastWheelAt < 560;
+      const recentTouch = st.isTouching || now - st.lastTouchAt < 2400;
+      const recentStepKey = now - st.lastStepKeyAt < 500;
       const jumpKeyIsLatest =
         st.lastJumpKeyAt > Math.max(st.lastWheelAt, st.lastTouchAt, st.lastStepKeyAt);
       const recentJumpKey = jumpKeyIsLatest && now - st.lastJumpKeyAt < 1500;
@@ -375,7 +406,7 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
         st.lastScrollbarAt = now;
         st.activeDirectNav = true;
       } else if (
-        Math.abs(deltaRaw) > 0.002 &&
+        Math.abs(deltaRaw) > 0.003 &&
         now >= st.reconcilingUntil &&
         !recentWheel &&
         !recentTouch &&
@@ -383,7 +414,6 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
         !recentJumpKey &&
         !isProgrammaticLenis
       ) {
-        // Explicit native scrollbar drag outside wheel, touch, keyboard, or Lenis smoothing
         st.lastScrollbarAt = now;
         st.activeDirectNav = true;
       }
@@ -400,21 +430,22 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
       const isDirectNav =
         st.isScrollbarPointerDown ||
         st.activeDirectNav ||
-        now - st.lastScrollbarAt < 250 ||
+        now - st.lastScrollbarAt < 240 ||
         recentJumpKey;
 
-      // Stage 3: Update regulated controlledTarget from raw scroll intent
+      // ------------------------------------------------------------------
+      // LAYER 3: INTENT TARGET REGULATOR (BOUNDED FORWARD LEAD + INSTANT REVERSE)
+      // ------------------------------------------------------------------
       if (isDirectNav) {
         st.controlledTarget = rawTarget;
         st.gestureAnchor = rawTarget;
       } else if (deltaRaw < 0) {
-        // Backward scroll / Replay rewind: collapse unseen forward surplus immediately & unwind cleanly
         const recentBackwardIntent =
           st.lastInputDir < 0 &&
           now - Math.max(st.lastWheelAt, st.lastTouchAt, st.lastStepKeyAt) < 600;
 
         if (recentBackwardIntent && deltaRaw < -0.0003 && st.controlledTarget > st.displayed + 0.012) {
-          const collapsed = Math.max(0, st.displayed + deltaRaw);
+          const collapsed = clamp01(st.displayed + deltaRaw);
           st.controlledTarget = collapsed;
           if (!st.isTouching) {
             reconcileLenisToTarget(activeLenisObj, collapsed, now);
@@ -426,8 +457,7 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
         }
         st.gestureAnchor = Math.min(st.gestureAnchor, st.controlledTarget);
       } else if (deltaRaw > 0) {
-        // Forward scroll: normalize & cap target horizon so a single huge fling cannot queue multiple scenes
-        const isTouchDriven = st.isTouching || (now - st.lastTouchAt < 2600 && !recentWheel && !recentStepKey);
+        const isTouchDriven = st.isTouching || (now - st.lastTouchAt < 2400 && !recentWheel && !recentStepKey);
         const maxLeadFromDisplayed = clamp01(st.displayed + cfg.maxSingleGestureAdvance);
         const rawCandidate = clamp01(st.controlledTarget + deltaRaw);
 
@@ -437,148 +467,170 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
         } else {
           st.controlledTarget = Math.min(rawCandidate, maxLeadFromDisplayed);
         }
+      } else if (
+        rawTarget >= 0.994 &&
+        st.lastInputDir > 0 &&
+        now - st.pendingBottomWheelAt < 140 &&
+        st.controlledTarget < 1.0
+      ) {
+        // Keep steady forward intent flowing cleanly if sustained fast scrolling hit the DOM floor early
+        st.controlledTarget = clamp01(
+          Math.max(st.controlledTarget, Math.min(1.0, st.displayed + cfg.maxSingleGestureAdvance * 0.75))
+        );
       }
 
       if (
         st.activeDirectNav &&
         !st.isScrollbarPointerDown &&
-        Math.abs(st.controlledTarget - st.displayed) < 0.003
+        Math.abs(st.controlledTarget - st.displayed) < 0.0003
       ) {
         st.activeDirectNav = false;
       }
 
-      // Quietly re-align hidden DOM scroll track only if a touch/fling overshot downward & settled
+      // Reconcile DOM scroll track only when completely idle so backward wheel/touch always reacts 1:1
       if (
         !isDirectNav &&
         !st.isTouching &&
         !isProgrammaticLenis &&
         now >= st.reconcilingUntil &&
-        now - st.lastRawChangeAt > 170 &&
+        now - st.lastWheelAt > 240 &&
+        now - st.lastTouchAt > 300 &&
+        now - st.lastRawChangeAt > 200 &&
         rawTarget > st.controlledTarget + 0.015
       ) {
         reconcileLenisToTarget(activeLenisObj, st.controlledTarget, now);
       }
 
-      // Stage 4 & 5: Content-aware scene presentation protection & bounded playhead motion
+      // ------------------------------------------------------------------
+      // LAYER 4: ORDERED POST-REVEAL CONTENT PRESENTATION CONTROLLER
+      // ------------------------------------------------------------------
       const curDisplayed = st.displayed;
       const curSceneIdx = findSceneIndex(curDisplayed);
+      const curScene = SCENE_CONFIG[curSceneIdx];
+      const [sceneStart, sceneEnd] = curScene.range;
+      const sceneDuration = Math.max(0.001, sceneEnd - sceneStart);
+      const localNow = clamp01((curDisplayed - sceneStart) / sceneDuration);
+      const milestones = cfg.scenes[curScene.id]?.milestones || [];
+
       if (curSceneIdx !== st.sceneIndex) {
         st.sceneIndex = curSceneIdx;
-        st.sceneEnteredAt = now;
-        st.fullRevealReachedAt = null;
+        st.milestoneReachedAt = milestones.map((m) => (localNow >= m.atLocal ? now : null));
       }
 
-      const scene = SCENE_CONFIG[curSceneIdx];
-      const [sceneStart, sceneEnd] = scene.range;
-      const sceneDuration = Math.max(0.001, sceneEnd - sceneStart);
+      // Record exact timestamp once each milestone reaches 100% visibility; reset only on real backward rewind
+      for (let i = 0; i < milestones.length; i += 1) {
+        const m = milestones[i];
+        if (st.milestoneReachedAt[i] === undefined) {
+          st.milestoneReachedAt[i] = null;
+        }
+        if (localNow < m.atLocal - 0.045) {
+          st.milestoneReachedAt[i] = null;
+        } else if (st.milestoneReachedAt[i] === null && localNow >= m.atLocal) {
+          st.milestoneReachedAt[i] = now;
+        }
+      }
+
+      // Find the earliest incomplete milestone whose exit gate lies before scene crossfade
+      let activeGateProgress = 1.0;
+      let isGated = false;
       const isTerminalScene = curSceneIdx >= SCENE_CONFIG.length - 1;
-      const sceneCfg = cfg.scenes[scene.id] || {
-        minPresentationMs: 2200,
-        fullRevealLocal: 0.84,
-        minReadDwellMs: 950,
-      };
-      const sceneMaxForwardVel =
-        cfg.maxForwardVelocityByScene[scene.id] ?? cfg.maxForwardVelocity;
+      if (!isTerminalScene) {
+        const maxSafeGateLocal = getMaxSafeGateLocal(curScene);
+        for (let i = 0; i < milestones.length; i += 1) {
+          const m = milestones[i];
+          const reachedAt = st.milestoneReachedAt[i];
+          const remainingReadMs =
+            reachedAt === null ? m.minReadableMs : Math.max(0, m.minReadableMs - (now - reachedAt));
 
-      const fullRevealPoint = sceneStart + sceneDuration * sceneCfg.fullRevealLocal;
-      const localNow = clamp01((curDisplayed - sceneStart) / sceneDuration);
-      if (st.fullRevealReachedAt === null && localNow >= sceneCfg.fullRevealLocal) {
-        st.fullRevealReachedAt = now;
-      }
-
-      const elapsedSceneMs = now - st.sceneEnteredAt;
-      const remainingPresentationMs = Math.max(0, sceneCfg.minPresentationMs - elapsedSceneMs);
-      const elapsedReadMs = st.fullRevealReachedAt !== null ? now - st.fullRevealReachedAt : 0;
-      const remainingReadMs =
-        st.fullRevealReachedAt !== null
-          ? Math.max(0, sceneCfg.minReadDwellMs - elapsedReadMs)
-          : sceneCfg.minReadDwellMs;
-
-      const requiredWaitMs = isTerminalScene
-        ? 0
-        : Math.max(remainingPresentationMs, remainingReadMs);
-      const gate = getSceneExitGate(scene, sceneCfg.fullRevealLocal);
-
-      const gap = st.controlledTarget - curDisplayed;
-      let nextDisplayed = curDisplayed;
-
-      if (Math.abs(gap) < 0.00004) {
-        nextDisplayed = st.controlledTarget;
-      } else if (isDirectNav) {
-        const lerpAlpha = 1 - Math.exp(-10.0 * dt);
-        const rawStep = gap * lerpAlpha;
-        const maxStep = cfg.directNavVelocity * dt;
-        nextDisplayed = clamp01(
-          curDisplayed + Math.sign(rawStep) * Math.min(Math.abs(rawStep), maxStep)
-        );
-      } else if (gap > 0) {
-        // Forward playhead motion: obey scene exit gate until content has been presented & readable
-        const gatedTarget =
-          !isTerminalScene && requiredWaitMs > 0
-            ? Math.min(st.controlledTarget, gate)
-            : st.controlledTarget;
-
-        const targetGap = gatedTarget - curDisplayed;
-
-        if (targetGap > 0) {
-          if (!isTerminalScene && requiredWaitMs > 0 && st.controlledTarget > gate) {
-            if (st.fullRevealReachedAt === null) {
-              // Phase 1 (Reveal): glide steadily to full-reveal point without pre-reveal Zeno stall
-              const revealTarget = Math.min(gate, fullRevealPoint + 0.0008);
-              const distToReveal = Math.max(0, revealTarget - curDisplayed);
-              const revealBudgetMs = Math.max(
-                350,
-                sceneCfg.minPresentationMs - sceneCfg.minReadDwellMs - elapsedSceneMs
-              );
-              const revealSec = revealBudgetMs / 1000;
-              const revealMaxVel = Math.max(sceneMaxForwardVel * 1.6, 0.075);
-              const paceSpeed = Math.min(
-                revealMaxVel,
-                Math.max(0.015, distToReveal / revealSec)
-              );
-              nextDisplayed = clamp01(curDisplayed + Math.min(targetGap, paceSpeed * dt));
-            } else {
-              // Phase 2 (Read Dwell): gently drift across remainder up to exit gate until read dwell finishes
-              const remainingSec = Math.max(0.016, requiredWaitMs / 1000);
-              const paceSpeed = Math.min(
-                sceneMaxForwardVel,
-                Math.max(0.004, targetGap / remainingSec)
-              );
-              nextDisplayed = clamp01(curDisplayed + Math.min(targetGap, paceSpeed * dt));
-            }
-          } else {
-            // Immediate deliberate response, bounded by reading speed inside scene and crisp crossfade once read-dwell finishes
-            const isExitingReadyScene =
-              !isTerminalScene &&
-              requiredWaitMs === 0 &&
-              st.fullRevealReachedAt !== null &&
-              curDisplayed >= gate - 0.002;
-            const effectiveForwardVel = isExitingReadyScene
-              ? Math.max(sceneMaxForwardVel * 2.0, 0.16)
-              : sceneMaxForwardVel;
-            const lerpAlpha = 1 - Math.exp(-cfg.transitionSmoothing * dt);
-            const maxStep = effectiveForwardVel * dt;
-            const desiredStep = Math.min(targetGap * lerpAlpha, maxStep);
-            const step =
-              targetGap < 0.0005 ? targetGap : Math.max(desiredStep, Math.min(targetGap, 0.00025));
-            nextDisplayed = clamp01(curDisplayed + Math.min(targetGap, step));
+          if (remainingReadMs > 0) {
+            const safeGateLocal = Math.min(m.gateLocal, maxSafeGateLocal);
+            activeGateProgress = sceneStart + sceneDuration * safeGateLocal;
+            isGated = true;
+            break;
           }
         }
+      }
+
+      // ------------------------------------------------------------------
+      // LAYER 5: CONSTANT-CRUISE DT PLAYHEAD WITH SMOOTH ATTACK / BRAKING
+      // ------------------------------------------------------------------
+      const totalGap = st.controlledTarget - curDisplayed;
+      let nextDisplayed = curDisplayed;
+
+      if (Math.abs(totalGap) < 0.00003) {
+        nextDisplayed = st.controlledTarget;
+        st.velocity = 0;
+      } else if (isDirectNav) {
+        const rawStep = totalGap * (1 - Math.exp(-12.0 * dt));
+        const maxStep = cfg.directNavVelocity * dt;
+        const clampedStep = Math.sign(rawStep) * Math.min(Math.abs(rawStep), maxStep);
+        nextDisplayed = clamp01(curDisplayed + clampedStep);
+        st.velocity = clampedStep / dt;
+      } else if (totalGap > 0) {
+        const effectiveTarget = isGated
+          ? Math.min(st.controlledTarget, activeGateProgress)
+          : st.controlledTarget;
+        const effectiveGap = effectiveTarget - curDisplayed;
+
+        if (effectiveGap <= 0.00005) {
+          // Resting cleanly inside milestone readability window until minReadableMs finishes
+          nextDisplayed = Math.max(curDisplayed, effectiveTarget);
+          st.velocity = 0;
+        } else {
+          const sceneCruiseVel = cfg.cruiseVelocityByScene[curScene.id] ?? cfg.cruiseVelocity;
+          // Smooth parabolic braking cushion so arriving at a gate or resting target never jerks
+          const brakingLimit = Math.sqrt(2 * cfg.decelerationPerSec2 * effectiveGap);
+          const settleLimit = effectiveGap * cfg.settleSmoothing;
+          const isApproachingFinalTarget = !isGated || st.controlledTarget <= activeGateProgress;
+          const cushionVel = isApproachingFinalTarget
+            ? Math.min(brakingLimit, Math.max(0.004, settleLimit))
+            : brakingLimit;
+
+          const desiredVel = Math.min(sceneCruiseVel, cushionVel);
+
+          if (st.velocity < 0) st.velocity = 0;
+          const rampRate =
+            desiredVel >= st.velocity ? cfg.accelerationPerSec2 : cfg.decelerationPerSec2 * 1.6;
+          const dv = desiredVel - st.velocity;
+          const maxDv = rampRate * dt;
+          if (Math.abs(dv) <= maxDv) {
+            st.velocity = desiredVel;
+          } else {
+            st.velocity += Math.sign(dv) * maxDv;
+          }
+
+          const step = Math.min(effectiveGap, Math.max(0.00004, st.velocity * dt));
+          nextDisplayed = clamp01(curDisplayed + step);
+        }
       } else {
-        // Backward progression: smooth, responsive, zero scene trap
-        const lerpAlpha = 1 - Math.exp(-cfg.transitionSmoothing * dt);
-        const maxStep = cfg.maxReverseVelocity * dt;
-        const absGap = Math.abs(gap);
-        const desiredStep = Math.min(absGap * lerpAlpha, maxStep);
-        const step =
-          absGap < 0.0005 ? absGap : Math.max(desiredStep, Math.min(absGap, 0.00035));
-        nextDisplayed = clamp01(curDisplayed - Math.min(absGap, step));
+        // Backward progression: responsive & smooth reversal without trapping
+        const absGap = Math.abs(totalGap);
+        if (absGap < 0.00005) {
+          nextDisplayed = st.controlledTarget;
+          st.velocity = 0;
+        } else {
+          const desiredReverseMag = Math.min(
+            cfg.maxReverseVelocity,
+            Math.max(absGap * cfg.settleSmoothing, 0.015)
+          );
+          if (st.velocity > 0) st.velocity = 0;
+          const currentMag = Math.abs(st.velocity);
+          const rampRate = cfg.accelerationPerSec2 * 5.0;
+          const nextMag =
+            Math.abs(desiredReverseMag - currentMag) <= rampRate * dt
+              ? desiredReverseMag
+              : currentMag + Math.sign(desiredReverseMag - currentMag) * rampRate * dt;
+
+          st.velocity = -nextMag;
+          const step = Math.min(absGap, Math.max(0.00008, nextMag * dt));
+          nextDisplayed = clamp01(curDisplayed - step);
+        }
       }
 
       if (nextDisplayed !== st.displayed) {
         st.displayed = nextDisplayed;
         controlledProgress.set(nextDisplayed);
-        publishControlled(nextDisplayed);
+        syncActiveMask(nextDisplayed);
       }
     });
 
@@ -592,19 +644,16 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
     scrollYProgress,
     controlledProgress,
     lenis,
-    publishControlled,
+    syncActiveMask,
   ]);
 
   const value = useMemo(
     () => ({
       scrollYProgress: activeMotionValue,
-      currentProgress,
-      activeSceneIndex,
       activeMask,
-      activeScene: SCENE_CONFIG[activeSceneIndex] || SCENE_CONFIG[0],
       scenes: SCENE_CONFIG,
     }),
-    [activeMotionValue, currentProgress, activeSceneIndex, activeMask]
+    [activeMotionValue, activeMask]
   );
 
   return React.createElement(WeddingTimelineContext.Provider, { value }, children);

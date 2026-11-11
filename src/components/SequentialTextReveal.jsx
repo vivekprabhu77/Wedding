@@ -22,41 +22,41 @@ export default function SequentialTextReveal({
   // ========================================================
   // STAGE 2: NAME REVEALS (0.26 -> 0.50)
   // ========================================================
-  const salutationOpacity = useTransform(localProgress, [0.26, 0.36], [0, 1]);
-  const salutationY = useTransform(localProgress, [0.26, 0.36], [10, 0]);
+  const salutationOpacity = useTransform(localProgress, [0.20, 0.29], [0, 1]);
+  const salutationY = useTransform(localProgress, [0.20, 0.29], [10, 0]);
 
-  const nameOpacity = useTransform(localProgress, [0.32, 0.44], [0, 1]);
-  const nameY = useTransform(localProgress, [0.32, 0.44], [14, 0]);
-  const nameScale = useTransform(localProgress, [0.32, 0.48], [0.96, 1.0]);
+  const nameOpacity = useTransform(localProgress, [0.25, 0.36], [0, 1]);
+  const nameY = useTransform(localProgress, [0.25, 0.36], [14, 0]);
+  const nameScale = useTransform(localProgress, [0.25, 0.40], [0.96, 1.0]);
 
-  const kannadaOpacity = useTransform(localProgress, [0.28, 0.40], [0, 0.9]);
-
-  // ========================================================
-  // STAGE 3: PARENTS REVEALS (0.48 -> 0.74)
-  // ========================================================
-  const dividerOpacity = useTransform(localProgress, [0.46, 0.54], [0, 1]);
-
-  const roleOpacity = useTransform(localProgress, [0.50, 0.58], [0, 1]);
-  const roleY = useTransform(localProgress, [0.50, 0.58], [8, 0]);
-
-  const motherOpacity = useTransform(localProgress, [0.55, 0.63], [0, 1]);
-  const motherY = useTransform(localProgress, [0.55, 0.63], [8, 0]);
-
-  const ampersandOpacity = useTransform(localProgress, [0.60, 0.67], [0, 1]);
-
-  const fatherOpacity = useTransform(localProgress, [0.64, 0.72], [0, 1]);
-  const fatherY = useTransform(localProgress, [0.64, 0.72], [8, 0]);
+  const kannadaOpacity = useTransform(localProgress, [0.22, 0.34], [0, 0.9]);
 
   // ========================================================
-  // STAGE 4: HOMETOWN REVEALS (0.72 -> 0.96)
+  // STAGE 3: PARENTS REVEALS (0.39 -> 0.61)
   // ========================================================
-  const hometownDividerOpacity = useTransform(localProgress, [0.72, 0.79], [0, 1]);
+  const dividerOpacity = useTransform(localProgress, [0.39, 0.46], [0, 1]);
 
-  const placeOpacity = useTransform(localProgress, [0.76, 0.85], [0, 1]);
-  const placeY = useTransform(localProgress, [0.76, 0.85], [8, 0]);
+  const roleOpacity = useTransform(localProgress, [0.42, 0.50], [0, 1]);
+  const roleY = useTransform(localProgress, [0.42, 0.50], [8, 0]);
 
-  const districtOpacity = useTransform(localProgress, [0.82, 0.90], [0, 1]);
-  const districtY = useTransform(localProgress, [0.82, 0.90], [6, 0]);
+  const motherOpacity = useTransform(localProgress, [0.46, 0.54], [0, 1]);
+  const motherY = useTransform(localProgress, [0.46, 0.54], [8, 0]);
+
+  const ampersandOpacity = useTransform(localProgress, [0.50, 0.56], [0, 1]);
+
+  const fatherOpacity = useTransform(localProgress, [0.53, 0.61], [0, 1]);
+  const fatherY = useTransform(localProgress, [0.53, 0.61], [8, 0]);
+
+  // ========================================================
+  // STAGE 4: HOMETOWN REVEALS (0.61 -> 0.80, well before 0.88 exit crossfade)
+  // ========================================================
+  const hometownDividerOpacity = useTransform(localProgress, [0.61, 0.67], [0, 1]);
+
+  const placeOpacity = useTransform(localProgress, [0.65, 0.74], [0, 1]);
+  const placeY = useTransform(localProgress, [0.65, 0.74], [8, 0]);
+
+  const districtOpacity = useTransform(localProgress, [0.71, 0.80], [0, 1]);
+  const districtY = useTransform(localProgress, [0.71, 0.80], [6, 0]);
 
   return (
     <div

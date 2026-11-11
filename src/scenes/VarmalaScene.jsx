@@ -131,7 +131,7 @@ export default function VarmalaScene() {
 
   const namesOpacity = useTransform(localProgress, [0.78, 0.86], [0, 1]);
   const namesY = useTransform(localProgress, [0.78, 0.86], [16, 0]);
-  const namesScale = useTransform(localProgress, [0.78, 0.92], [0.97, 1.0]);
+  const namesScale = useTransform(localProgress, [0.78, 0.87], [0.97, 1.0]);
 
   return (
     <motion.section

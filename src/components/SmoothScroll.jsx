@@ -69,18 +69,14 @@ export default function SmoothScroll({ children }) {
     if (typeof window === 'undefined') return undefined;
 
     const ctrlCfg = SCROLL_SETTINGS.controller || {};
-    const wheelSensitivity = ctrlCfg.wheelSensitivity ?? 0.78;
-    const maxInputPerEventPx = ctrlCfg.maxInputPerEventPx ?? 72;
-    const maxWheelBurstBucketPx = ctrlCfg.maxWheelBurstBucketPx ?? 340;
-    const wheelBucketRefillPxPerSec = ctrlCfg.wheelBucketRefillPxPerSec ?? 460;
-
-    let forwardBucketPx = maxWheelBurstBucketPx;
-    let lastBucketTime = performance.now();
-    let lastBucketDir = 0;
+    const lenisDuration = ctrlCfg.lenisDuration ?? 0.42;
+    const wheelSensitivity = ctrlCfg.wheelSensitivity ?? 0.9;
+    const maxInputPerEventPx = ctrlCfg.maxInputPerEventPx ?? 260;
+    const softKneeInputPx = ctrlCfg.softKneeInputPx ?? 110;
 
     const lenis = new Lenis({
-      duration: prefersReducedMotion ? 0 : 1.15,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+      duration: prefersReducedMotion ? 0 : lenisDuration,
+      easing: (t) => 1 - Math.pow(1 - t, 3),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: !prefersReducedMotion,
@@ -93,41 +89,16 @@ export default function SmoothScroll({ children }) {
       virtualScroll: (data) => {
         if (prefersReducedMotion || !data || !data.event) return true;
         if (data.event.type === 'wheel' && data.deltaY !== 0) {
-          const now = performance.now();
-          const dtSec = Math.min(0.25, Math.max(0.001, (now - lastBucketTime) / 1000));
-          lastBucketTime = now;
-
           const dir = Math.sign(data.deltaY);
-          // Reset forward burst regulator immediately on backward intent so reverse responds 1:1
-          if (dir < 0 && lastBucketDir > 0) {
-            forwardBucketPx = maxWheelBurstBucketPx;
-          }
-          lastBucketDir = dir;
-
           let mag = Math.abs(data.deltaY);
-          if (dir > 0) {
-            // Forward scroll: preserve crisp normal wheel ticks while soft-compressing extreme spikes
-            if (mag > maxInputPerEventPx) {
-              const excess = mag - maxInputPerEventPx;
-              mag = Math.min(maxInputPerEventPx * 1.65, maxInputPerEventPx + excess * 0.25);
-            }
-            forwardBucketPx = Math.min(
-              maxWheelBurstBucketPx,
-              forwardBucketPx + wheelBucketRefillPxPerSec * dtSec
-            );
-            const allowed = Math.min(mag, forwardBucketPx);
-            forwardBucketPx = Math.max(0, forwardBucketPx - allowed);
-            // Keep strictly non-zero (0.05px min) so Lenis still executes preventDefault() on wheel
-            data.deltaY = Math.max(0.05, allowed);
-          } else {
-            // Backward scroll: nimble and responsive while shaping extreme outlier ticks
-            const reverseMax = maxInputPerEventPx * 1.5;
-            if (mag > reverseMax) {
-              const excess = mag - reverseMax;
-              mag = Math.min(reverseMax * 1.3, reverseMax + excess * 0.25);
-            }
-            data.deltaY = -Math.max(0.05, mag);
+
+          // Soft knee compression for extreme single-event wheel spikes without starving normal scrolls
+          if (mag > softKneeInputPx) {
+            const excess = mag - softKneeInputPx;
+            mag = Math.min(maxInputPerEventPx, softKneeInputPx + excess * 0.45);
           }
+
+          data.deltaY = dir * Math.max(0.5, mag);
         }
         return true;
       },

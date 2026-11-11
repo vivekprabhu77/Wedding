@@ -57,7 +57,6 @@ export default function GroomVarmala({
         position: 'relative',
         width: `${width}px`,
         height: `${height}px`,
-        filter: 'drop-shadow(0 16px 32px rgba(0, 0, 0, 0.45))',
         ...style,
       }}
       aria-label="Groom Chi. Vighnesh"

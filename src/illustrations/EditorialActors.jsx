@@ -17,7 +17,6 @@ export function EditorialBride({
         display: 'inline-block',
         position: 'relative',
         width: typeof width === 'number' ? `${width}px` : width,
-        filter: 'drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55))',
         ...style,
       }}
       aria-label="Bride Chi. Sou. Rashmitha"
@@ -54,7 +53,6 @@ export function EditorialGroom({
         display: 'inline-block',
         position: 'relative',
         width: typeof width === 'number' ? `${width}px` : width,
-        filter: 'drop-shadow(0 18px 36px rgba(0, 0, 0, 0.55))',
         ...style,
       }}
       aria-label="Groom Chi. Vighnesh"
@@ -91,7 +89,6 @@ export function EditorialGroomPlaces({
         display: 'inline-block',
         position: 'relative',
         width: typeof width === 'number' ? `${width}px` : width,
-        filter: 'drop-shadow(0 20px 42px rgba(0, 0, 0, 0.6))',
         ...style,
       }}
       aria-label="Groom placing Varmala on Bride"
@@ -128,7 +125,6 @@ export function EditorialBridePlaces({
         display: 'inline-block',
         position: 'relative',
         width: typeof width === 'number' ? `${width}px` : width,
-        filter: 'drop-shadow(0 20px 42px rgba(0, 0, 0, 0.6))',
         ...style,
       }}
       aria-label="Bride placing Varmala on Groom"
@@ -165,7 +161,6 @@ export function EditorialCoupleAdorned({
         display: 'inline-block',
         position: 'relative',
         width: typeof width === 'number' ? `${width}px` : width,
-        filter: 'drop-shadow(0 22px 48px rgba(0, 0, 0, 0.62))',
         ...style,
       }}
       aria-label="Couple Vighnesh and Rashmitha adorned with Varmalas"

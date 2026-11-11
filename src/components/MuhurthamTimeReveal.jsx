@@ -117,7 +117,7 @@ export default function MuhurthamTimeReveal({
             background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF4D0 40%, #E6C47A 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.65))',
+            textShadow: '0 2px 10px rgba(0, 0, 0, 0.65)',
             display: 'inline-block',
           }}
         >

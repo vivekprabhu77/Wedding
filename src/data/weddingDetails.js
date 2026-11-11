@@ -157,39 +157,70 @@ export const SCENE_CONFIG = [
 export const SCROLL_SETTINGS = {
   totalScrollTrackVh: 700,
   controller: {
-    // Exponential transition smoothing factor (responsive 0ms reaction without heavy easing tails)
-    transitionSmoothing: 10.5,
-    // Maximum baseline forward velocity (progress/sec) & content-aware per-scene forward limits
-    maxForwardVelocity: 0.095,
-    maxForwardVelocityByScene: {
-      opening: 0.11,    // Opening card: shorter visual scan (~1.1s min crossing at max speed)
-      varmala: 0.095,   // 6-stage garland exchange + shloka (~2.3s across 0.22 span)
-      groom: 0.048,     // Portrait + Salutation + Name + Parents + Hometown (~2.3s across 0.11 span)
-      bride: 0.048,     // Portrait + Salutation + Name + Parents + Hometown (~2.3s across 0.11 span)
-      muhurtham: 0.056, // Date + Muhurtham time + Makara Lagnam + Calendar (~2.5s across 0.14 span)
-      venue: 0.058,     // Mandap + Auditorium + Location + Directions CTA (~2.6s across 0.15 span)
-      blessings: 0.09,  // Closing shloka & family gratitude (~1.65s across 0.15 span)
+    // Baseline & scene-calibrated constant cruise playback velocities (progress/sec)
+    cruiseVelocity: 0.048,
+    cruiseVelocityByScene: {
+      opening: 0.054,
+      varmala: 0.056,
+      groom: 0.042,
+      bride: 0.042,
+      muhurtham: 0.046,
+      venue: 0.048,
+      blessings: 0.056,
     },
-    // Maximum reverse velocity (progress/sec) — smooth & responsive, never traps backward scrolling
-    maxReverseVelocity: 0.46,
-    // Brisk, controlled velocity for explicit direct jumps (Home / End / native scrollbar drag)
-    directNavVelocity: 1.15,
-    // Lenis wheel / trackpad input normalization & leaky-bucket burst regulator
-    wheelSensitivity: 0.88,
-    maxInputPerEventPx: 135,
-    maxWheelBurstBucketPx: 480,
-    wheelBucketRefillPxPerSec: 680,
-    // Upper bound on controlled target advance per single fast wheel/touch gesture
-    maxSingleGestureAdvance: 0.16,
-    // Content-aware scene presentation & reading requirements
+    // Smooth acceleration & braking envelope (eliminates abrupt starts/stops or exit dashes)
+    accelerationPerSec2: 0.22,
+    decelerationPerSec2: 0.24,
+    settleSmoothing: 12.0,
+    // Reverse playback speed (progress/sec): responsive backward scrolling without trapping
+    maxReverseVelocity: 0.52,
+    // Controlled velocity for explicit direct jumps (Home / End / native scrollbar drag)
+    directNavVelocity: 1.25,
+    // Lenis wheel / trackpad normalization (natural 1:1 feel with soft extreme-spike protection)
+    lenisDuration: 0.42,
+    wheelSensitivity: 1.0,
+    maxInputPerEventPx: 680,
+    softKneeInputPx: 260,
+    // Max queued lead per isolated aggressive wheel/touch burst (~1.4 scenes ahead)
+    maxSingleGestureAdvance: 0.18,
+    // Ordered post-reveal readability milestones per scene
+    // minReadableMs begins counting ONLY after localProgress >= atLocal (100% visibility)
+    // and completes strictly before exit crossfade (gateLocal < 0.88 / 0.918).
     scenes: {
-      opening: { minPresentationMs: 1000, fullRevealLocal: 0.65, minReadDwellMs: 450 },
-      varmala: { minPresentationMs: 2250, fullRevealLocal: 0.84, minReadDwellMs: 900 },
-      groom: { minPresentationMs: 2200, fullRevealLocal: 0.84, minReadDwellMs: 900 },
-      bride: { minPresentationMs: 2200, fullRevealLocal: 0.84, minReadDwellMs: 900 },
-      muhurtham: { minPresentationMs: 2400, fullRevealLocal: 0.84, minReadDwellMs: 1000 },
-      venue: { minPresentationMs: 2500, fullRevealLocal: 0.84, minReadDwellMs: 1050 },
-      blessings: { minPresentationMs: 1300, fullRevealLocal: 0.75, minReadDwellMs: 500 },
+      opening: {
+        milestones: [
+          { id: 'opening-card', atLocal: 0.35, gateLocal: 0.70, minReadableMs: 1100 },
+        ],
+      },
+      varmala: {
+        milestones: [
+          { id: 'varmala-garlands', atLocal: 0.56, gateLocal: 0.64, minReadableMs: 850 },
+          { id: 'varmala-couple-names', atLocal: 0.87, gateLocal: 0.90, minReadableMs: 1700 },
+        ],
+      },
+      groom: {
+        milestones: [
+          { id: 'groom-hometown-udupi', atLocal: 0.80, gateLocal: 0.855, minReadableMs: 1850 },
+        ],
+      },
+      bride: {
+        milestones: [
+          { id: 'bride-hometown-udupi', atLocal: 0.80, gateLocal: 0.855, minReadableMs: 1850 },
+        ],
+      },
+      muhurtham: {
+        milestones: [
+          { id: 'muhurtham-full-schedule', atLocal: 0.85, gateLocal: 0.868, minReadableMs: 1850 },
+        ],
+      },
+      venue: {
+        milestones: [
+          { id: 'venue-full-directions', atLocal: 0.84, gateLocal: 0.865, minReadableMs: 1850 },
+        ],
+      },
+      blessings: {
+        milestones: [],
+      },
     },
   },
 };

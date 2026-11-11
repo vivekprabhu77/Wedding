@@ -129,7 +129,7 @@ export default function OrnamentalDateReveal({
             background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF0C2 35%, #DFBA73 70%, #B68A43 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            filter: 'drop-shadow(0 6px 18px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 25px rgba(223, 186, 115, 0.3))',
+            textShadow: '0 6px 18px rgba(0, 0, 0, 0.82), 0 0 22px rgba(223, 186, 115, 0.25)',
             display: 'inline-block',
           }}
         >
