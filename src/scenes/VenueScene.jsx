@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { motion, useTransform } from 'framer-motion';
 import { useSceneTimeline } from '../hooks/useWeddingTimeline';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { useViewportTier } from '../hooks/useViewportTier';
 import { WEDDING_DETAILS } from '../data/weddingDetails';
 import MandapVenueFrame from '../components/MandapVenueFrame';
 import VenueDirectionsAction from '../components/VenueDirectionsAction';
@@ -24,22 +25,8 @@ export default function VenueScene() {
   const { localProgress, opacity, y, scale, isActive, sceneConfig } =
     useSceneTimeline('venue');
   const reducedMotion = useReducedMotion();
+  const { isCompact, isUltraNarrow, isShortViewport } = useViewportTier();
   const { venue } = WEDDING_DETAILS;
-
-  const [isCompact, setIsCompact] = useState(() =>
-    typeof window !== 'undefined'
-      ? window.innerWidth < 640 || window.innerHeight < 700
-      : false
-  );
-
-  useEffect(() => {
-    const checkViewport = () => {
-      setIsCompact(window.innerWidth < 640 || window.innerHeight < 700);
-    };
-    checkViewport();
-    window.addEventListener('resize', checkViewport);
-    return () => window.removeEventListener('resize', checkViewport);
-  }, []);
 
   // ========================================================
   // 1. MUHURTHAM TO MANDAP TRANSITION & ARCHITECTURAL STAGING
@@ -110,7 +97,18 @@ export default function VenueScene() {
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        padding: isCompact ? 'clamp(6px, 2vw, 12px)' : 'clamp(12px, 2.5vw, 24px)',
+        paddingTop: isCompact
+          ? 'max(14px, env(safe-area-inset-top, 0px))'
+          : 'clamp(12px, 2.5vw, 24px)',
+        paddingBottom: isCompact
+          ? 'max(14px, env(safe-area-inset-bottom, 0px))'
+          : 'clamp(12px, 2.5vw, 24px)',
+        paddingLeft: isCompact
+          ? 'max(10px, env(safe-area-inset-left, 0px))'
+          : 'clamp(12px, 2.5vw, 24px)',
+        paddingRight: isCompact
+          ? 'max(10px, env(safe-area-inset-right, 0px))'
+          : 'clamp(12px, 2.5vw, 24px)',
         opacity,
         y: reducedMotion ? 0 : y,
         scale: reducedMotion ? 1 : scale,
@@ -141,6 +139,8 @@ export default function VenueScene() {
           floralY={reducedMotion ? 0 : floralY}
           lampGlowOpacity={lampGlowOpacity}
           isCompact={isCompact}
+          isUltraNarrow={isUltraNarrow}
+          isShortViewport={isShortViewport}
         >
           {/* Stage 1: Classical Heading — THE WEDDING VENUE */}
           <motion.div
@@ -149,36 +149,38 @@ export default function VenueScene() {
               y: reducedMotion ? 0 : headingY,
               fontFamily: 'var(--font-display)',
               fontSize: isCompact
-                ? 'clamp(0.64rem, 2.6vw, 0.78rem)'
+                ? '0.69rem'
                 : 'clamp(0.74rem, 1.15vw, 0.88rem)',
-              letterSpacing: '0.24em',
+              letterSpacing: isCompact ? '0.18em' : '0.24em',
               color: 'var(--color-gold-light)',
               textTransform: 'uppercase',
               fontWeight: 600,
-              marginBottom: isCompact ? '6px' : '10px',
+              marginBottom: isCompact ? (isShortViewport ? '4px' : '7px') : '10px',
             }}
           >
             {venue.sectionLabel || 'THE WEDDING VENUE'}
           </motion.div>
 
-          {/* Subtle Temple Lotus Crown Accent above Venue Name */}
-          <motion.div
-            style={{
-              opacity: headingOpacity,
-              marginBottom: isCompact ? '6px' : '10px',
-            }}
-            aria-hidden="true"
-          >
-            <svg width="26" height="16" viewBox="0 0 26 16" fill="none">
-              <path
-                d="M13 1 C15 5 18 8 24 9 C18 11 15 13 13 15 C11 13 8 11 2 9 C8 8 11 5 13 1 Z"
-                fill="rgba(223, 186, 115, 0.25)"
-                stroke="var(--color-antique-gold)"
-                strokeWidth="1"
-              />
-              <circle cx="13" cy="9" r="1.8" fill="var(--color-gold-bright)" />
-            </svg>
-          </motion.div>
+          {/* Subtle Temple Lotus Crown Accent above Venue Name (skipped on short phones to preserve air) */}
+          {!isShortViewport && (
+            <motion.div
+              style={{
+                opacity: headingOpacity,
+                marginBottom: isCompact ? '7px' : '10px',
+              }}
+              aria-hidden="true"
+            >
+              <svg width="24" height="15" viewBox="0 0 26 16" fill="none">
+                <path
+                  d="M13 1 C15 5 18 8 24 9 C18 11 15 13 13 15 C11 13 8 11 2 9 C8 8 11 5 13 1 Z"
+                  fill="rgba(223, 186, 115, 0.25)"
+                  stroke="var(--color-antique-gold)"
+                  strokeWidth="1"
+                />
+                <circle cx="13" cy="9" r="1.8" fill="var(--color-gold-bright)" />
+              </svg>
+            </motion.div>
+          )}
 
           {/* Stage 3: Monumental Auditorium Name Lines */}
           <h2
@@ -187,7 +189,7 @@ export default function VenueScene() {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: isCompact ? '2px' : '4px',
+              gap: isCompact ? (isShortViewport ? '2px' : '4px') : '4px',
               width: '100%',
             }}
           >
@@ -196,15 +198,22 @@ export default function VenueScene() {
               style={{
                 opacity: nameLine1Opacity,
                 y: reducedMotion ? 0 : nameLine1Y,
-                fontSize: isCompact
-                  ? 'clamp(1rem, 4.3vw, 1.28rem)'
-                  : 'clamp(1.36rem, 2.4vw, 1.88rem)',
+                fontSize: isUltraNarrow
+                  ? '0.84rem'
+                  : isCompact
+                    ? 'clamp(0.92rem, 3.6vw, 1.14rem)'
+                    : 'clamp(1.36rem, 2.4vw, 1.88rem)',
                 fontWeight: 700,
-                letterSpacing: isCompact ? '0.04em' : '0.08em',
-                lineHeight: 1.22,
+                letterSpacing: isUltraNarrow
+                  ? '0.02em'
+                  : isCompact
+                    ? '0.03em'
+                    : '0.08em',
+                lineHeight: 1.2,
                 color: 'var(--color-ivory)',
                 textShadow: '0 3px 14px rgba(0, 0, 0, 0.75)',
                 display: 'block',
+                maxWidth: '100%',
               }}
             >
               {venue.nameLine1 || 'AMMANNI RAMANNA SHETTY'}
@@ -215,15 +224,18 @@ export default function VenueScene() {
               style={{
                 opacity: nameLine2Opacity,
                 y: reducedMotion ? 0 : nameLine2Y,
-                fontSize: isCompact
-                  ? 'clamp(0.88rem, 3.7vw, 1.12rem)'
-                  : 'clamp(1.12rem, 1.9vw, 1.48rem)',
+                fontSize: isUltraNarrow
+                  ? '0.78rem'
+                  : isCompact
+                    ? 'clamp(0.84rem, 3.15vw, 1.02rem)'
+                    : 'clamp(1.12rem, 1.9vw, 1.48rem)',
                 fontWeight: 600,
-                letterSpacing: isCompact ? '0.07em' : '0.12em',
-                lineHeight: 1.25,
+                letterSpacing: isCompact ? '0.055em' : '0.12em',
+                lineHeight: 1.24,
                 color: 'var(--color-gold-bright)',
                 textShadow: '0 2px 12px rgba(0, 0, 0, 0.7)',
                 display: 'block',
+                maxWidth: '100%',
               }}
             >
               {venue.nameLine2 || 'MEMORIAL AUDITORIUM'}
@@ -240,8 +252,10 @@ export default function VenueScene() {
             }}
           >
             <OrnamentalDivider
-              width={isCompact ? 'min(150px, 50%)' : 'min(220px, 48%)'}
-              style={{ margin: isCompact ? '8px auto' : '12px auto' }}
+              width={isCompact ? 'min(140px, 46%)' : 'min(220px, 48%)'}
+              style={{
+                margin: isCompact ? (isShortViewport ? '6px auto' : '9px auto') : '12px auto',
+              }}
             />
           </motion.div>
 
@@ -251,7 +265,7 @@ export default function VenueScene() {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: '3px',
+              gap: isCompact ? '2px' : '3px',
             }}
           >
             <motion.div
@@ -260,9 +274,11 @@ export default function VenueScene() {
                 y: reducedMotion ? 0 : cityY,
                 fontFamily: 'var(--font-display)',
                 fontSize: isCompact
-                  ? 'clamp(0.86rem, 3.6vw, 1.02rem)'
+                  ? isShortViewport
+                    ? '0.84rem'
+                    : 'clamp(0.9rem, 3.5vw, 1.02rem)'
                   : 'clamp(1.02rem, 1.6vw, 1.24rem)',
-                letterSpacing: '0.22em',
+                letterSpacing: isCompact ? '0.18em' : '0.22em',
                 color: 'var(--color-ivory)',
                 fontWeight: 600,
               }}
@@ -276,9 +292,11 @@ export default function VenueScene() {
                 y: reducedMotion ? 0 : regionY,
                 fontFamily: 'var(--font-editorial)',
                 fontSize: isCompact
-                  ? 'clamp(0.82rem, 3.3vw, 0.96rem)'
+                  ? isShortViewport
+                    ? '0.78rem'
+                    : 'clamp(0.84rem, 3.2vw, 0.94rem)'
                   : 'clamp(0.95rem, 1.5vw, 1.12rem)',
-                letterSpacing: '0.16em',
+                letterSpacing: isCompact ? '0.12em' : '0.16em',
                 color: 'var(--color-gold-light)',
                 fontWeight: 500,
                 textTransform: 'uppercase',
@@ -299,6 +317,7 @@ export default function VenueScene() {
             noteOpacity={noteOpacity}
             noteY={reducedMotion ? 0 : noteY}
             isCompact={isCompact}
+            isShortViewport={isShortViewport}
             reducedMotion={reducedMotion}
           />
         </MandapVenueFrame>

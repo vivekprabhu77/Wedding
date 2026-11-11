@@ -148,32 +148,48 @@ export const SCENE_CONFIG = [
 ];
 
 /**
- * Scroll track configuration
- * 7 scenes with ample breathing room: 700vh provides a comfortable,
- * cinematic scroll speed on both desktop wheel and mobile touch.
+ * Scroll track & Authoritative Cinematic Playhead Controller configuration
+ *
+ * The visitor controls direction and intention through scrolling, while raw scroll
+ * distance is regulated so aggressive wheel/trackpad/touch gestures cannot blast
+ * past multiple scenes or erase readable wedding details.
  */
 export const SCROLL_SETTINGS = {
   totalScrollTrackVh: 700,
   controller: {
-    // Responsive exponential smoothing factor for deliberate scrolling
-    normalLerpSpeed: 12.0,
-    // Steady forward speed cap after presentation window or within scene interior (progress/sec)
-    maxSteadyForwardVelocity: 0.22,
-    // Smooth, responsive backward scroll speed cap (progress/sec) — never locked by scene dwell
-    maxBackwardVelocity: 0.48,
-    // Brisk catch-up speed for direct scrollbar dragging and Home/End jumps (progress/sec)
+    // Exponential transition smoothing factor (responsive 0ms reaction without heavy easing tails)
+    transitionSmoothing: 10.5,
+    // Maximum baseline forward velocity (progress/sec) & content-aware per-scene forward limits
+    maxForwardVelocity: 0.095,
+    maxForwardVelocityByScene: {
+      opening: 0.11,    // Opening card: shorter visual scan (~1.1s min crossing at max speed)
+      varmala: 0.095,   // 6-stage garland exchange + shloka (~2.3s across 0.22 span)
+      groom: 0.048,     // Portrait + Salutation + Name + Parents + Hometown (~2.3s across 0.11 span)
+      bride: 0.048,     // Portrait + Salutation + Name + Parents + Hometown (~2.3s across 0.11 span)
+      muhurtham: 0.056, // Date + Muhurtham time + Makara Lagnam + Calendar (~2.5s across 0.14 span)
+      venue: 0.058,     // Mandap + Auditorium + Location + Directions CTA (~2.6s across 0.15 span)
+      blessings: 0.09,  // Closing shloka & family gratitude (~1.65s across 0.15 span)
+    },
+    // Maximum reverse velocity (progress/sec) — smooth & responsive, never traps backward scrolling
+    maxReverseVelocity: 0.46,
+    // Brisk, controlled velocity for explicit direct jumps (Home / End / native scrollbar drag)
     directNavVelocity: 1.15,
-    // Soft cap on per-event wheel delta in Lenis virtualScroll before gentle compression
-    maxWheelDeltaPx: 95,
-    // Minimum meaningful presentation window (ms) per scene before advancing across its exit gate
-    minScenePresentationMs: {
-      opening: 1250,
-      varmala: 1750,
-      groom: 1350,
-      bride: 1350,
-      muhurtham: 1450,
-      venue: 1450,
-      blessings: 1200,
+    // Lenis wheel / trackpad input normalization & leaky-bucket burst regulator
+    wheelSensitivity: 0.88,
+    maxInputPerEventPx: 135,
+    maxWheelBurstBucketPx: 480,
+    wheelBucketRefillPxPerSec: 680,
+    // Upper bound on controlled target advance per single fast wheel/touch gesture
+    maxSingleGestureAdvance: 0.16,
+    // Content-aware scene presentation & reading requirements
+    scenes: {
+      opening: { minPresentationMs: 1000, fullRevealLocal: 0.65, minReadDwellMs: 450 },
+      varmala: { minPresentationMs: 2250, fullRevealLocal: 0.84, minReadDwellMs: 900 },
+      groom: { minPresentationMs: 2200, fullRevealLocal: 0.84, minReadDwellMs: 900 },
+      bride: { minPresentationMs: 2200, fullRevealLocal: 0.84, minReadDwellMs: 900 },
+      muhurtham: { minPresentationMs: 2400, fullRevealLocal: 0.84, minReadDwellMs: 1000 },
+      venue: { minPresentationMs: 2500, fullRevealLocal: 0.84, minReadDwellMs: 1050 },
+      blessings: { minPresentationMs: 1300, fullRevealLocal: 0.75, minReadDwellMs: 500 },
     },
   },
 };

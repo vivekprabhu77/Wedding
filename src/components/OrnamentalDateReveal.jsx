@@ -25,6 +25,9 @@ export default function OrnamentalDateReveal({
   monthYearY,
   kannadaOpacity,
   kannadaY,
+  isCompact = false,
+  isUltraNarrow = false,
+  isShortViewport = false,
 }) {
   const { date } = WEDDING_DETAILS;
 
@@ -46,11 +49,11 @@ export default function OrnamentalDateReveal({
           opacity: labelOpacity,
           y: labelY,
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(0.65rem, 1.1vw, 0.82rem)',
-          letterSpacing: '0.24em',
+          fontSize: isCompact ? '0.69rem' : 'clamp(0.68rem, 1.1vw, 0.82rem)',
+          letterSpacing: isCompact ? '0.18em' : '0.24em',
           color: 'var(--color-gold-light)',
           textTransform: 'uppercase',
-          marginBottom: '4px',
+          marginBottom: isCompact ? '2px' : '4px',
           fontWeight: 600,
         }}
       >
@@ -63,12 +66,16 @@ export default function OrnamentalDateReveal({
           opacity: dayOpacity,
           y: dayY,
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(1.15rem, 2.4vw, 1.7rem)',
-          letterSpacing: '0.18em',
+          fontSize: isCompact
+            ? isShortViewport
+              ? '0.96rem'
+              : '1.12rem'
+            : 'clamp(1.15rem, 2.4vw, 1.7rem)',
+          letterSpacing: isCompact ? '0.16em' : '0.18em',
           color: 'var(--color-gold-bright)',
           textTransform: 'uppercase',
           fontWeight: 600,
-          margin: '2px 0 6px',
+          margin: isCompact ? '1px 0 3px' : '2px 0 6px',
           textShadow: '0 2px 10px rgba(0,0,0,0.6)',
         }}
       >
@@ -86,28 +93,34 @@ export default function OrnamentalDateReveal({
           display: 'inline-flex',
           alignItems: 'center',
           justifyContent: 'center',
-          margin: '2px 0',
+          margin: isCompact ? '1px 0' : '2px 0',
         }}
       >
-        {/* Subtle decorative gold flanking wings */}
-        <span
-          aria-hidden="true"
-          style={{
-            color: 'var(--color-antique-gold)',
-            fontSize: 'clamp(1.2rem, 3vw, 2.2rem)',
-            opacity: 0.7,
-            marginRight: 'clamp(8px, 2vw, 16px)',
-          }}
-        >
-          ❧
-        </span>
+        {/* Subtle decorative gold flanking wings (hidden on ultra-narrow screens for breathing room) */}
+        {!isUltraNarrow && (
+          <span
+            aria-hidden="true"
+            style={{
+              color: 'var(--color-antique-gold)',
+              fontSize: isCompact ? '1.15rem' : 'clamp(1.2rem, 3vw, 2.2rem)',
+              opacity: 0.65,
+              marginRight: isCompact ? '8px' : 'clamp(8px, 2vw, 16px)',
+            }}
+          >
+            ❧
+          </span>
+        )}
 
         <span
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(4.2rem, 11vw, 7.6rem)',
+            fontSize: isCompact
+              ? isShortViewport
+                ? 'clamp(3.1rem, 12vw, 3.7rem)'
+                : 'clamp(3.6rem, 13.5vw, 4.4rem)'
+              : 'clamp(4.2rem, 11vw, 7.6rem)',
             fontWeight: 700,
-            lineHeight: 0.9,
+            lineHeight: 0.92,
             letterSpacing: '-0.02em',
             background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF0C2 35%, #DFBA73 70%, #B68A43 100%)',
             WebkitBackgroundClip: 'text',
@@ -119,19 +132,21 @@ export default function OrnamentalDateReveal({
           {date.dateNumber || '26'}
         </span>
 
-        <span
-          aria-hidden="true"
-          style={{
-            color: 'var(--color-antique-gold)',
-            fontSize: 'clamp(1.2rem, 3vw, 2.2rem)',
-            opacity: 0.7,
-            marginLeft: 'clamp(8px, 2vw, 16px)',
-            transform: 'scaleX(-1)',
-            display: 'inline-block',
-          }}
-        >
-          ❧
-        </span>
+        {!isUltraNarrow && (
+          <span
+            aria-hidden="true"
+            style={{
+              color: 'var(--color-antique-gold)',
+              fontSize: isCompact ? '1.15rem' : 'clamp(1.2rem, 3vw, 2.2rem)',
+              opacity: 0.65,
+              marginLeft: isCompact ? '8px' : 'clamp(8px, 2vw, 16px)',
+              transform: 'scaleX(-1)',
+              display: 'inline-block',
+            }}
+          >
+            ❧
+          </span>
+        )}
       </motion.div>
 
       {/* 4. Month & Year: NOVEMBER 2026 */}
@@ -140,12 +155,16 @@ export default function OrnamentalDateReveal({
           opacity: monthYearOpacity,
           y: monthYearY,
           fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(1.05rem, 2.2vw, 1.55rem)',
-          letterSpacing: '0.16em',
+          fontSize: isCompact
+            ? isShortViewport
+              ? '0.96rem'
+              : 'clamp(1.04rem, 3.8vw, 1.2rem)'
+            : 'clamp(1.05rem, 2.2vw, 1.55rem)',
+          letterSpacing: isCompact ? '0.13em' : '0.16em',
           color: 'var(--color-ivory)',
           textTransform: 'uppercase',
           fontWeight: 600,
-          marginTop: '4px',
+          marginTop: isCompact ? '2px' : '4px',
           textShadow: '0 2px 8px rgba(0,0,0,0.7)',
         }}
       >
@@ -159,10 +178,15 @@ export default function OrnamentalDateReveal({
           opacity: kannadaOpacity,
           y: kannadaY,
           color: 'var(--color-gold-bright)',
-          fontSize: 'clamp(0.85rem, 1.5vw, 1.05rem)',
-          marginTop: '6px',
+          fontSize: isCompact
+            ? isShortViewport
+              ? '0.8rem'
+              : '0.88rem'
+            : 'clamp(0.85rem, 1.5vw, 1.05rem)',
+          marginTop: isCompact ? '3px' : '6px',
           fontWeight: 500,
-          letterSpacing: '0.04em',
+          letterSpacing: '0.03em',
+          lineHeight: 1.35,
         }}
       >
         {date.kannada}

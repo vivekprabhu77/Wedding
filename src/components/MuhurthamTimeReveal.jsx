@@ -19,6 +19,8 @@ export default function MuhurthamTimeReveal({
   timeOpacity,
   timeScale,
   timeY,
+  isCompact = false,
+  isShortViewport = false,
 }) {
   const { date } = WEDDING_DETAILS;
 
@@ -32,45 +34,49 @@ export default function MuhurthamTimeReveal({
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        marginTop: 'clamp(12px, 2.5vh, 22px)',
+        marginTop: isCompact
+          ? isShortViewport
+            ? '8px'
+            : '14px'
+          : 'clamp(12px, 2.5vh, 22px)',
         width: '100%',
         maxWidth: '460px',
       }}
     >
-      {/* 1. Header: THE MUHURTHAM */}
-      <motion.div
-        style={{
-          opacity: titleOpacity,
-          y: titleY,
-          fontFamily: 'var(--font-display)',
-          fontSize: 'clamp(0.72rem, 1.2vw, 0.88rem)',
-          letterSpacing: '0.22em',
-          color: 'var(--color-gold-light)',
-          textTransform: 'uppercase',
-          fontWeight: 600,
-          marginBottom: '6px',
-        }}
-      >
-        {date.muhurthamTitle || 'THE MUHURTHAM'}
-      </motion.div>
-
       {/* Delicate Ornamental Time Divider */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          gap: '10px',
+          gap: '8px',
           width: '100%',
-          maxWidth: '200px',
-          marginBottom: '8px',
+          maxWidth: isCompact ? '160px' : '200px',
+          marginBottom: isCompact ? (isShortViewport ? '5px' : '8px') : '8px',
         }}
         aria-hidden="true"
       >
-        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(182, 138, 67, 0.6))' }} />
-        <span style={{ color: 'var(--color-gold-bright)', fontSize: '0.65rem' }}>✧</span>
-        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(270deg, transparent, rgba(182, 138, 67, 0.6))' }} />
+        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(90deg, transparent, rgba(182, 138, 67, 0.55))' }} />
+        <span style={{ color: 'var(--color-gold-bright)', fontSize: '0.62rem' }}>✧</span>
+        <div style={{ flex: 1, height: '1px', background: 'linear-gradient(270deg, transparent, rgba(182, 138, 67, 0.55))' }} />
       </div>
+
+      {/* 1. Header: THE MUHURTHAM */}
+      <motion.div
+        style={{
+          opacity: titleOpacity,
+          y: titleY,
+          fontFamily: 'var(--font-display)',
+          fontSize: isCompact ? '0.69rem' : 'clamp(0.72rem, 1.2vw, 0.88rem)',
+          letterSpacing: isCompact ? '0.2em' : '0.22em',
+          color: 'var(--color-gold-light)',
+          textTransform: 'uppercase',
+          fontWeight: 600,
+          marginBottom: isCompact ? '3px' : '6px',
+        }}
+      >
+        {date.muhurthamTitle || 'THE MUHURTHAM'}
+      </motion.div>
 
       {/* 2. Prominent Ceremonial Time: 11:15 AM */}
       <motion.div
@@ -78,23 +84,36 @@ export default function MuhurthamTimeReveal({
           opacity: timeOpacity,
           scale: timeScale,
           y: timeY,
-          padding: 'clamp(6px, 1.2vh, 10px) clamp(18px, 4vw, 32px)',
+          padding: isCompact
+            ? isShortViewport
+              ? '4px 18px'
+              : '6px 24px'
+            : 'clamp(6px, 1.2vh, 10px) clamp(18px, 4vw, 32px)',
           borderRadius: '4px',
-          border: '1px solid rgba(182, 138, 67, 0.55)',
-          background: 'linear-gradient(180deg, rgba(182, 138, 67, 0.16) 0%, rgba(39, 8, 13, 0.5) 100%)',
-          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.45), inset 0 0 12px rgba(182, 138, 67, 0.15)',
+          border: isCompact ? 'none' : '1px solid rgba(182, 138, 67, 0.55)',
+          background: isCompact
+            ? 'radial-gradient(ellipse at 50% 50%, rgba(182, 138, 67, 0.16) 0%, transparent 78%)'
+            : 'linear-gradient(180deg, rgba(182, 138, 67, 0.16) 0%, rgba(39, 8, 13, 0.5) 100%)',
+          boxShadow: isCompact
+            ? 'none'
+            : '0 4px 20px rgba(0, 0, 0, 0.45), inset 0 0 12px rgba(182, 138, 67, 0.15)',
         }}
       >
         <span
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(1.75rem, 4.2vw, 2.75rem)',
+            fontSize: isCompact
+              ? isShortViewport
+                ? 'clamp(1.55rem, 6.2vw, 1.85rem)'
+                : 'clamp(1.8rem, 7vw, 2.2rem)'
+              : 'clamp(1.75rem, 4.2vw, 2.75rem)',
             fontWeight: 700,
-            letterSpacing: '0.08em',
+            letterSpacing: '0.07em',
+            lineHeight: 1.15,
             background: 'linear-gradient(180deg, #FFFFFF 0%, #FFF4D0 40%, #E6C47A 100%)',
             WebkitBackgroundClip: 'text',
             WebkitTextFillColor: 'transparent',
-            textShadow: '0 2px 12px rgba(0,0,0,0.6)',
+            filter: 'drop-shadow(0 2px 10px rgba(0,0,0,0.65))',
             display: 'inline-block',
           }}
         >

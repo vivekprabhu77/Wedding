@@ -20,7 +20,10 @@ export default function OrnamentalFrame() {
         pointerEvents: 'none',
         zIndex: 'var(--z-ornamental-frame, 20)',
         boxSizing: 'border-box',
-        padding: 'var(--frame-inset, clamp(12px, 2.5vw, 28px))',
+        paddingTop: 'max(var(--frame-inset, clamp(8px, 2.2vw, 28px)), env(safe-area-inset-top, 0px))',
+        paddingBottom: 'max(var(--frame-inset, clamp(8px, 2.2vw, 28px)), env(safe-area-inset-bottom, 0px))',
+        paddingLeft: 'max(var(--frame-inset, clamp(8px, 2.2vw, 28px)), env(safe-area-inset-left, 0px))',
+        paddingRight: 'max(var(--frame-inset, clamp(8px, 2.2vw, 28px)), env(safe-area-inset-right, 0px))',
       }}
     >
       {/* Outer Fine Gold Border Container */}

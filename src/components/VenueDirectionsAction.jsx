@@ -22,6 +22,7 @@ export default function VenueDirectionsAction({
   noteOpacity,
   noteY,
   isCompact = false,
+  isShortViewport = false,
   reducedMotion = false,
 }) {
   const { venue } = WEDDING_DETAILS;
@@ -35,7 +36,7 @@ export default function VenueDirectionsAction({
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        marginTop: isCompact ? '6px' : '12px',
+        marginTop: isCompact ? (isShortViewport ? '5px' : '10px') : '12px',
       }}
     >
       {/* Illustrated Route Line & Temple Location Pin */}
@@ -44,6 +45,8 @@ export default function VenueDirectionsAction({
         pinOpacity={pinOpacity}
         pinY={pinY}
         pinScale={pinScale}
+        isCompact={isCompact}
+        isShortViewport={isShortViewport}
       />
 
       {/* Ceremonial "GET DIRECTIONS" External Action */}
@@ -51,7 +54,8 @@ export default function VenueDirectionsAction({
         style={{
           opacity: ctaOpacity,
           y: ctaY,
-          marginTop: isCompact ? '6px' : '10px',
+          marginTop: isCompact ? (isShortViewport ? '6px' : '10px') : '10px',
+          width: isCompact ? '100%' : 'auto',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -67,8 +71,9 @@ export default function VenueDirectionsAction({
             display: 'inline-flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: '10px',
-            minHeight: '46px',
+            gap: '9px',
+            minHeight: '48px',
+            minWidth: isCompact ? 'min(228px, 90%)' : 'auto',
             padding: isCompact ? '10px 22px' : '11px 28px',
             background:
               'linear-gradient(135deg, #F5E5C0 0%, #DFBA73 45%, #B68A43 100%)',
@@ -76,11 +81,11 @@ export default function VenueDirectionsAction({
             border: '1px solid #FFF2D6',
             outline: '1px solid rgba(182, 138, 67, 0.45)',
             outlineOffset: '3px',
-            borderRadius: '2px',
+            borderRadius: '3px',
             fontFamily: 'var(--font-display)',
             fontSize: isCompact ? '0.76rem' : '0.84rem',
             fontWeight: 700,
-            letterSpacing: '0.16em',
+            letterSpacing: isCompact ? '0.14em' : '0.16em',
             textTransform: 'uppercase',
             textDecoration: 'none',
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
@@ -131,10 +136,14 @@ export default function VenueDirectionsAction({
           y: noteY,
           fontFamily: 'var(--font-editorial)',
           fontStyle: 'italic',
-          fontSize: isCompact ? 'clamp(0.86rem, 3.6vw, 0.96rem)' : 'clamp(0.95rem, 1.5vw, 1.12rem)',
+          fontSize: isCompact
+            ? isShortViewport
+              ? '0.86rem'
+              : 'clamp(0.9rem, 3.6vw, 0.98rem)'
+            : 'clamp(0.95rem, 1.5vw, 1.12rem)',
           color: 'var(--color-champagne, #E6D5B8)',
           letterSpacing: '0.02em',
-          marginTop: isCompact ? '8px' : '10px',
+          marginTop: isCompact ? (isShortViewport ? '8px' : '12px') : '10px',
           marginBottom: 0,
         }}
       >

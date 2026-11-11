@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
  * Ornate South Indian Kalyana Mandapa temple roof Vimana, Kalasha finial,
  * and wide sweeping cornice lintel that rests flush atop twin pillars.
  */
-export function MandapCanopyArch({ archOpacity }) {
+export function MandapCanopyArch({ archOpacity, isCompact = false, isShortViewport = false }) {
   return (
     <motion.div
       className="mandap-canopy-arch"
@@ -25,11 +25,12 @@ export function MandapCanopyArch({ archOpacity }) {
       {/* Ornate Temple Roof Vimana & Kalasha Arch resting directly on both pillars */}
       <svg
         viewBox="0 0 700 56"
+        preserveAspectRatio={isCompact ? 'none' : 'xMidYMid meet'}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         style={{
           width: '100%',
-          height: 'auto',
+          height: isCompact ? (isShortViewport ? '28px' : '38px') : 'auto',
           display: 'block',
           overflow: 'visible',
           filter: 'drop-shadow(0 4px 12px rgba(0, 0, 0, 0.5))',
@@ -112,7 +113,13 @@ export function MandapCanopyArch({ archOpacity }) {
  * Scalloped jasmine strands, Amra Pallava (mango leaves), and crimson rose tassels
  * suspended right beneath the mandap cornice beam between both carved pillars.
  */
-export function MandapFloralToranam({ floralOpacity, floralY, isCompact = false }) {
+export function MandapFloralToranam({
+  floralOpacity,
+  floralY,
+  isCompact = false,
+  isUltraNarrow = false,
+  isShortViewport = false,
+}) {
   return (
     <motion.div
       className="mandap-floral-toranam"
@@ -120,8 +127,8 @@ export function MandapFloralToranam({ floralOpacity, floralY, isCompact = false 
       style={{
         position: 'absolute',
         top: 0,
-        left: isCompact ? '18px' : 'clamp(28px, 4.4vw, 44px)',
-        right: isCompact ? '18px' : 'clamp(28px, 4.4vw, 44px)',
+        left: isUltraNarrow ? '14px' : isCompact ? '18px' : 'clamp(28px, 4.4vw, 44px)',
+        right: isUltraNarrow ? '14px' : isCompact ? '18px' : 'clamp(28px, 4.4vw, 44px)',
         opacity: floralOpacity,
         y: floralY,
         pointerEvents: 'none',
@@ -130,11 +137,12 @@ export function MandapFloralToranam({ floralOpacity, floralY, isCompact = false 
     >
       <svg
         viewBox="0 0 600 42"
+        preserveAspectRatio={isCompact ? 'none' : 'xMidYMid meet'}
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
         style={{
           width: '100%',
-          height: 'auto',
+          height: isCompact ? (isShortViewport ? '18px' : '24px') : 'auto',
           display: 'block',
           overflow: 'visible',
         }}
@@ -207,14 +215,14 @@ export function MandapFloralToranam({ floralOpacity, floralY, isCompact = false 
  * Traditional carved South Indian temple column (Stambha) with stepped plinth,
  * fluted gold shaft rings, lotus capital, and ornamental bracket.
  */
-export function MandapPillar({ side = 'left', isCompact = false }) {
+export function MandapPillar({ side = 'left', isCompact = false, isUltraNarrow = false }) {
   const isLeft = side === 'left';
   return (
     <div
       className={`mandap-pillar mandap-pillar-${side}`}
       aria-hidden="true"
       style={{
-        width: isCompact ? '22px' : 'clamp(34px, 5vw, 52px)',
+        width: isUltraNarrow ? '14px' : isCompact ? '18px' : 'clamp(34px, 5vw, 52px)',
         height: '100%',
         display: 'flex',
         flexDirection: 'column',
@@ -329,7 +337,14 @@ export function ThookuVilakku({ side = 'left', glowOpacity, isCompact = false })
  * Handcrafted traditional route path & illustrated temple location pin emblem.
  * Uses Framer Motion pathLength so the dotted ceremonial path draws smoothly on scroll.
  */
-export function LocationRouteMotif({ pathProgress, pinOpacity, pinY, pinScale }) {
+export function LocationRouteMotif({
+  pathProgress,
+  pinOpacity,
+  pinY,
+  pinScale,
+  isCompact = false,
+  isShortViewport = false,
+}) {
   return (
     <div
       style={{
@@ -338,7 +353,7 @@ export function LocationRouteMotif({ pathProgress, pinOpacity, pinY, pinScale })
         alignItems: 'center',
         justifyContent: 'center',
         width: '100%',
-        maxWidth: '240px',
+        maxWidth: isCompact ? (isShortViewport ? '150px' : '185px') : '240px',
         margin: '0 auto',
         pointerEvents: 'none',
       }}
@@ -348,7 +363,12 @@ export function LocationRouteMotif({ pathProgress, pinOpacity, pinY, pinScale })
         viewBox="0 0 240 48"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
-        style={{ width: '100%', maxHeight: '42px', height: 'auto', overflow: 'visible' }}
+        style={{
+          width: '100%',
+          maxHeight: isCompact ? (isShortViewport ? '26px' : '34px') : '42px',
+          height: 'auto',
+          overflow: 'visible',
+        }}
       >
         {/* Origin Lotus Diamond Point (Left) */}
         <motion.g style={{ opacity: pinOpacity }}>

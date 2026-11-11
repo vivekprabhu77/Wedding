@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion, useTransform } from 'framer-motion';
 import { useSceneTimeline } from '../hooks/useWeddingTimeline';
+import { useViewportTier } from '../hooks/useViewportTier';
 import { WEDDING_DETAILS } from '../data/weddingDetails';
 import CeremonialFrame from '../components/CeremonialFrame';
 import OrnamentalDateReveal from '../components/OrnamentalDateReveal';
@@ -20,6 +21,7 @@ import LagnamReveal from '../components/LagnamReveal';
 export default function MuhurthamScene() {
   const { localProgress, opacity, y, scale, isActive, sceneConfig } =
     useSceneTimeline('muhurtham');
+  const { isCompact, isUltraNarrow, isShortViewport } = useViewportTier();
 
   // ========================================================
   // STAGE 1: CEREMONIAL AWAKENING (0.00 – 0.22)
@@ -122,7 +124,18 @@ export default function MuhurthamScene() {
         alignItems: 'center',
         justifyContent: 'center',
         textAlign: 'center',
-        padding: 'clamp(8px, 2.5vw, 24px)',
+        paddingTop: isCompact
+          ? 'max(14px, env(safe-area-inset-top, 0px))'
+          : 'clamp(12px, 2.5vw, 24px)',
+        paddingBottom: isCompact
+          ? 'max(14px, env(safe-area-inset-bottom, 0px))'
+          : 'clamp(12px, 2.5vw, 24px)',
+        paddingLeft: isCompact
+          ? 'max(12px, env(safe-area-inset-left, 0px))'
+          : 'clamp(12px, 2.5vw, 24px)',
+        paddingRight: isCompact
+          ? 'max(12px, env(safe-area-inset-right, 0px))'
+          : 'clamp(12px, 2.5vw, 24px)',
         opacity,
         y,
         scale,
@@ -150,6 +163,8 @@ export default function MuhurthamScene() {
           frameScale={frameScale}
           frameOpacity={frameOpacity}
           lampGlow={lampGlow}
+          isCompact={isCompact}
+          isShortViewport={isShortViewport}
         >
           {/* ========================================================
               STAGE 2: THE WEDDING DATE REVEAL
@@ -167,6 +182,9 @@ export default function MuhurthamScene() {
             monthYearY={monthYearY}
             kannadaOpacity={kannadaOpacity}
             kannadaY={kannadaY}
+            isCompact={isCompact}
+            isUltraNarrow={isUltraNarrow}
+            isShortViewport={isShortViewport}
           />
 
           {/* ========================================================
@@ -181,6 +199,8 @@ export default function MuhurthamScene() {
             timeOpacity={timeOpacity}
             timeScale={timeScale}
             timeY={timeY}
+            isCompact={isCompact}
+            isShortViewport={isShortViewport}
           />
 
           {/* ========================================================
@@ -193,6 +213,8 @@ export default function MuhurthamScene() {
             lagnamOpacity={lagnamOpacity}
             lagnamScale={lagnamScale}
             lagnamY={lagnamY}
+            isCompact={isCompact}
+            isShortViewport={isShortViewport}
           />
 
           {/* ========================================================
@@ -202,12 +224,20 @@ export default function MuhurthamScene() {
             style={{
               opacity: calendarActionsOpacity,
               y: calendarActionsY,
-              marginTop: 'clamp(12px, 2vh, 18px)',
+              marginTop: isCompact
+                ? isShortViewport
+                  ? '10px'
+                  : '14px'
+                : 'clamp(12px, 2vh, 18px)',
+              width: isCompact ? '100%' : 'auto',
+              maxWidth: isCompact ? '320px' : 'none',
+              marginLeft: 'auto',
+              marginRight: 'auto',
               display: 'flex',
-              flexWrap: 'wrap',
+              flexWrap: isUltraNarrow ? 'wrap' : 'nowrap',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '10px',
+              gap: isCompact ? '8px' : '10px',
             }}
           >
             {/* Google Calendar Link */}
@@ -217,17 +247,21 @@ export default function MuhurthamScene() {
               rel="noopener noreferrer"
               aria-label="Add wedding date to Google Calendar"
               style={{
+                flex: isCompact ? '1 1 0' : '0 0 auto',
+                minHeight: isCompact ? (isShortViewport ? '38px' : '42px') : 'auto',
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '6px',
-                padding: '7px 14px',
+                padding: isCompact ? '7px 10px' : '7px 14px',
+                whiteSpace: 'nowrap',
                 background: 'rgba(182, 138, 67, 0.18)',
                 border: '1px solid var(--color-antique-gold)',
                 color: 'var(--color-gold-bright)',
                 fontFamily: 'var(--font-sans)',
-                fontSize: '0.72rem',
+                fontSize: isCompact ? '0.69rem' : '0.72rem',
                 fontWeight: 600,
-                letterSpacing: '0.06em',
+                letterSpacing: isCompact ? '0.04em' : '0.06em',
                 textTransform: 'uppercase',
                 borderRadius: '3px',
                 cursor: 'pointer',
@@ -243,7 +277,7 @@ export default function MuhurthamScene() {
                 e.currentTarget.style.color = 'var(--color-gold-bright)';
               }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                 <line x1="16" y1="2" x2="16" y2="6" />
                 <line x1="8" y1="2" x2="8" y2="6" />
@@ -258,17 +292,21 @@ export default function MuhurthamScene() {
               download="Vighnesh_Rashmitha_Wedding.ics"
               aria-label="Download Apple Calendar / iCal event"
               style={{
+                flex: isCompact ? '1 1 0' : '0 0 auto',
+                minHeight: isCompact ? (isShortViewport ? '38px' : '42px') : 'auto',
                 display: 'inline-flex',
                 alignItems: 'center',
+                justifyContent: 'center',
                 gap: '6px',
-                padding: '7px 14px',
+                padding: isCompact ? '7px 10px' : '7px 14px',
+                whiteSpace: 'nowrap',
                 background: 'rgba(245, 229, 192, 0.08)',
                 border: '1px solid rgba(182, 138, 67, 0.45)',
                 color: 'var(--color-cream)',
                 fontFamily: 'var(--font-sans)',
-                fontSize: '0.72rem',
+                fontSize: isCompact ? '0.69rem' : '0.72rem',
                 fontWeight: 600,
-                letterSpacing: '0.06em',
+                letterSpacing: isCompact ? '0.04em' : '0.06em',
                 textTransform: 'uppercase',
                 borderRadius: '3px',
                 cursor: 'pointer',
@@ -284,7 +322,7 @@ export default function MuhurthamScene() {
                 e.currentTarget.style.color = 'var(--color-cream)';
               }}
             >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
                 <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
                 <polyline points="7 10 12 15 17 10" />
                 <line x1="12" y1="15" x2="12" y2="3" />

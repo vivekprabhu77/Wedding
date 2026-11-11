@@ -111,7 +111,12 @@ a {
   border-width: 0;
 }
 
-/* Mobile-first HUD responsiveness */
+/* Mobile-first HUD & safe-area viewport responsiveness */
+.pinned-visual-viewport {
+  height: 100vh;
+  height: 100dvh;
+}
+
 @media (max-width: 520px) {
   .hud-title-desktop {
     display: none !important;

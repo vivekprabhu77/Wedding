@@ -26,6 +26,8 @@ export default function MandapVenueFrame({
   floralY,
   lampGlowOpacity,
   isCompact = false,
+  isUltraNarrow = false,
+  isShortViewport = false,
 }) {
   return (
     <motion.div
@@ -34,7 +36,7 @@ export default function MandapVenueFrame({
         scale: frameScale,
         opacity: frameOpacity,
         width: '100%',
-        maxWidth: isCompact ? 'min(420px, 95vw)' : 'min(700px, 90vw)',
+        maxWidth: isCompact ? 'min(430px, calc(100vw - 28px))' : 'min(700px, 90vw)',
         margin: '0 auto',
         position: 'relative',
         display: 'flex',
@@ -44,7 +46,11 @@ export default function MandapVenueFrame({
       }}
     >
       {/* Top Temple Canopy Arch & Cornice Beam resting directly on Twin Pillars */}
-      <MandapCanopyArch archOpacity={archOpacity} />
+      <MandapCanopyArch
+        archOpacity={archOpacity}
+        isCompact={isCompact}
+        isShortViewport={isShortViewport}
+      />
 
       {/* Sanctuary Body: Left Pillar | Illuminated Sanctum Interior | Right Pillar */}
       <div
@@ -65,7 +71,7 @@ export default function MandapVenueFrame({
           aria-hidden="true"
           style={{
             position: 'absolute',
-            inset: isCompact ? '0 18px 4px' : '0 38px 6px',
+            inset: isUltraNarrow ? '0 14px 4px' : isCompact ? '0 18px 4px' : '0 38px 6px',
             borderLeft: '1px solid rgba(223, 186, 115, 0.14)',
             borderRight: '1px solid rgba(223, 186, 115, 0.14)',
             borderBottom: '1px solid rgba(38, 61, 48, 0.42)',
@@ -78,19 +84,25 @@ export default function MandapVenueFrame({
           floralOpacity={floralOpacity}
           floralY={floralY}
           isCompact={isCompact}
+          isUltraNarrow={isUltraNarrow}
+          isShortViewport={isShortViewport}
         />
 
-        {/* Suspended Brass Temple Hanging Lamps inside the eaves */}
-        <ThookuVilakku
-          side="left"
-          glowOpacity={lampGlowOpacity}
-          isCompact={isCompact}
-        />
-        <ThookuVilakku
-          side="right"
-          glowOpacity={lampGlowOpacity}
-          isCompact={isCompact}
-        />
+        {/* Suspended Brass Temple Hanging Lamps inside the eaves (kept clear on compact phones) */}
+        {!isCompact && (
+          <>
+            <ThookuVilakku
+              side="left"
+              glowOpacity={lampGlowOpacity}
+              isCompact={isCompact}
+            />
+            <ThookuVilakku
+              side="right"
+              glowOpacity={lampGlowOpacity}
+              isCompact={isCompact}
+            />
+          </>
+        )}
 
         {/* Left Carved Temple Pillar */}
         <motion.div
@@ -102,7 +114,7 @@ export default function MandapVenueFrame({
             zIndex: 4,
           }}
         >
-          <MandapPillar side="left" isCompact={isCompact} />
+          <MandapPillar side="left" isCompact={isCompact} isUltraNarrow={isUltraNarrow} />
         </motion.div>
 
         {/* Central Sanctuary Content Area (Guaranteed Pillar & Toranam Clearance) */}
@@ -117,7 +129,9 @@ export default function MandapVenueFrame({
             alignItems: 'center',
             justifyContent: 'center',
             padding: isCompact
-              ? 'clamp(28px, 5.2vh, 38px) clamp(10px, 2.5vw, 16px) clamp(14px, 2.8vh, 20px)'
+              ? isShortViewport
+                ? '22px 10px 12px'
+                : '28px 12px 18px'
               : 'clamp(36px, 5.8vh, 48px) clamp(20px, 3.2vw, 34px) clamp(20px, 3.4vh, 28px)',
           }}
         >
@@ -134,7 +148,7 @@ export default function MandapVenueFrame({
             zIndex: 4,
           }}
         >
-          <MandapPillar side="right" isCompact={isCompact} />
+          <MandapPillar side="right" isCompact={isCompact} isUltraNarrow={isUltraNarrow} />
         </motion.div>
       </div>
 

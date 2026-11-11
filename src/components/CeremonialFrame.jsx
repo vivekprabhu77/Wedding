@@ -15,6 +15,8 @@ export default function CeremonialFrame({
   frameScale,
   frameOpacity,
   lampGlow = 1,
+  isCompact = false,
+  isShortViewport = false,
   style = {},
 }) {
   return (
@@ -24,43 +26,61 @@ export default function CeremonialFrame({
         scale: frameScale,
         opacity: frameOpacity,
         width: '100%',
-        maxWidth: 'min(580px, 91vw)',
+        maxWidth: isCompact ? 'min(420px, calc(100vw - 28px))' : 'min(580px, 91vw)',
         margin: '0 auto',
-        padding: 'clamp(18px, 3.5vw, 34px) clamp(14px, 3vw, 28px)',
+        padding: isCompact
+          ? isShortViewport
+            ? '12px 14px 13px'
+            : '18px 18px 20px'
+          : 'clamp(18px, 3.5vw, 34px) clamp(14px, 3vw, 28px)',
         position: 'relative',
         boxSizing: 'border-box',
-        borderRadius: '6px',
-        border: '1.5px solid rgba(182, 138, 67, 0.55)',
-        background:
-          'radial-gradient(ellipse at 50% 36%, rgba(248, 243, 233, 0.08) 0%, rgba(74, 18, 26, 0.45) 45%, rgba(39, 8, 13, 0.88) 100%)',
-        boxShadow:
-          '0 24px 60px rgba(0, 0, 0, 0.75), inset 0 0 40px rgba(182, 138, 67, 0.1)',
+        borderRadius: isCompact ? '8px' : '6px',
+        border: isCompact
+          ? '1px solid rgba(223, 186, 115, 0.36)'
+          : '1.5px solid rgba(182, 138, 67, 0.55)',
+        background: isCompact
+          ? 'radial-gradient(ellipse at 50% 38%, rgba(248, 243, 233, 0.06) 0%, rgba(56, 14, 20, 0.52) 55%, rgba(30, 7, 11, 0.84) 100%)'
+          : 'radial-gradient(ellipse at 50% 36%, rgba(248, 243, 233, 0.08) 0%, rgba(74, 18, 26, 0.45) 45%, rgba(39, 8, 13, 0.88) 100%)',
+        boxShadow: isCompact
+          ? '0 16px 40px rgba(0, 0, 0, 0.6), inset 0 0 24px rgba(182, 138, 67, 0.08)'
+          : '0 24px 60px rgba(0, 0, 0, 0.75), inset 0 0 40px rgba(182, 138, 67, 0.1)',
         backdropFilter: 'blur(8px)',
         WebkitBackdropFilter: 'blur(8px)',
         ...style,
       }}
     >
-      {/* Inner Delicate Inlay Border */}
-      <div
-        aria-hidden="true"
-        style={{
-          position: 'absolute',
-          inset: '7px',
-          border: '1px solid rgba(223, 186, 115, 0.35)',
-          borderRadius: '4px',
-          pointerEvents: 'none',
-        }}
-      />
+      {/* Inner Delicate Inlay Border (desktop/tablet shrine view only; kept open on mobile) */}
+      {!isCompact && (
+        <div
+          aria-hidden="true"
+          style={{
+            position: 'absolute',
+            inset: '7px',
+            border: '1px solid rgba(223, 186, 115, 0.35)',
+            borderRadius: '4px',
+            pointerEvents: 'none',
+          }}
+        />
+      )}
 
-      {/* 4 Traditional Temple Corner Brackets */}
-      <TempleCornerBracket corner="top-left" />
-      <TempleCornerBracket corner="top-right" />
-      <TempleCornerBracket corner="bottom-left" />
-      <TempleCornerBracket corner="bottom-right" />
+      {/* 4 Traditional Temple Corner Brackets (kept off narrow screens to prevent collision) */}
+      {!isCompact && (
+        <>
+          <TempleCornerBracket corner="top-left" />
+          <TempleCornerBracket corner="top-right" />
+          <TempleCornerBracket corner="bottom-left" />
+          <TempleCornerBracket corner="bottom-right" />
+        </>
+      )}
 
-      {/* Flanking Traditional South Indian Kuthuvillakku Lamps */}
-      <Kuthuvillakku side="left" glowIntensity={lampGlow} />
-      <Kuthuvillakku side="right" glowIntensity={lampGlow} />
+      {/* Flanking Traditional South Indian Kuthuvillakku Lamps (desktop/tablet composition) */}
+      {!isCompact && (
+        <>
+          <Kuthuvillakku side="left" glowIntensity={lampGlow} />
+          <Kuthuvillakku side="right" glowIntensity={lampGlow} />
+        </>
+      )}
 
       {/* Top Sacred Kalasha Medallion & Temple Archway Header */}
       <div
@@ -69,10 +89,12 @@ export default function CeremonialFrame({
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          marginBottom: '10px',
+          marginBottom: isCompact ? (isShortViewport ? '5px' : '9px') : '10px',
         }}
       >
-        <PurnaKalashaMedallion size={46} />
+        <PurnaKalashaMedallion
+          size={isCompact ? (isShortViewport ? 30 : 38) : 46}
+        />
         {/* Fine gold decorative line beneath kalasha */}
         <div
           style={{
@@ -81,8 +103,8 @@ export default function CeremonialFrame({
             justifyContent: 'center',
             gap: '8px',
             width: '100%',
-            maxWidth: '240px',
-            marginTop: '6px',
+            maxWidth: isCompact ? '180px' : '240px',
+            marginTop: isCompact ? '4px' : '6px',
           }}
           aria-hidden="true"
         >
