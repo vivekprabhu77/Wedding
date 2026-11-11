@@ -1,63 +1,108 @@
-import React, { createContext, useContext, useEffect, useRef, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import Lenis from 'lenis';
 import 'lenis/dist/lenis.css';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { SCROLL_SETTINGS } from '../data/weddingDetails';
 
 /**
- * Lenis Smooth Scroll Context
- * Exposes the active Lenis instance to any child component.
+ * SmoothScroll Context
+ * Exposes the active single Lenis instance and frame subscriber registration
+ * so the authoritative timeline controller runs inside the same animation loop.
  */
-const SmoothScrollContext = createContext(null);
+const SmoothScrollContext = createContext({
+  lenis: null,
+  subscribeFrame: null,
+});
 
 /**
  * Hook to access the active Lenis smooth-scroll instance
  * @returns {Lenis|null}
  */
 export function useLenis() {
+  const ctx = useContext(SmoothScrollContext);
+  return ctx ? ctx.lenis : null;
+}
+
+/**
+ * Hook to access Lenis + shared single-RAF subscription for the timeline controller
+ * @returns {{ lenis: Lenis|null, subscribeFrame: ((cb: Function) => () => void)|null }}
+ */
+export function useSmoothScrollController() {
   return useContext(SmoothScrollContext);
 }
 
 /**
  * SmoothScroll Component
- * Single application-level Lenis smooth-scroll provider.
+ * Single application-level Lenis smooth-scroll provider & unified animation loop.
  *
  * Requirements:
  * - Initializes Lenis once at the root level.
- * - Synchronizes with browser rendering via a single requestAnimationFrame loop.
- * - Preserves natural touch scrolling on mobile devices (no artificial touch delay).
- * - Respects prefers-reduced-motion (disables smoothing when requested).
- * - Properly cleans up animation frames and destroys the Lenis instance on unmount.
- * - Handles in-page anchor navigation smoothly through Lenis.
+ * - Shapes extreme single-wheel delta bursts cleanly via Lenis virtualScroll.
+ * - Runs a single requestAnimationFrame loop shared with WeddingTimelineProvider.
+ * - Preserves natural touch scrolling on mobile devices.
+ * - Respects prefers-reduced-motion.
+ * - Properly cleans up listeners, animation frames, and destroys Lenis on unmount.
  */
 export default function SmoothScroll({ children }) {
   const [lenisInstance, setLenisInstance] = useState(null);
   const lenisRef = useRef(null);
+  const frameSubscribersRef = useRef(new Set());
   const prefersReducedMotion = useReducedMotion();
 
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
+  const subscribeFrame = useCallback((callback) => {
+    if (typeof callback !== 'function') return () => {};
+    frameSubscribersRef.current.add(callback);
+    return () => {
+      frameSubscribersRef.current.delete(callback);
+    };
+  }, []);
 
-    // Configure Lenis with cinematic, natural scrolling curve
+  useEffect(() => {
+    if (typeof window === 'undefined') return undefined;
+
+    const maxWheelDeltaPx = SCROLL_SETTINGS.controller?.maxWheelDeltaPx ?? 95;
+
     const lenis = new Lenis({
-      duration: prefersReducedMotion ? 0 : 1.2,
+      duration: prefersReducedMotion ? 0 : 1.3,
       easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
       orientation: 'vertical',
       gestureOrientation: 'vertical',
       smoothWheel: !prefersReducedMotion,
-      wheelMultiplier: 1.0,
-      touchMultiplier: 1.5,
-      syncTouch: false, // Preserves 100% natural mobile touch responsiveness
+      wheelMultiplier: 0.78,
+      touchMultiplier: 1.0,
+      syncTouch: false,
       autoResize: true,
       infinite: false,
+      respectReducedMotion: true,
+      virtualScroll: (data) => {
+        if (prefersReducedMotion || !data || !data.event) return true;
+        // Gently compress extreme single-tick wheel spikes without mutating normal scrolling
+        if (data.event.type === 'wheel' && Math.abs(data.deltaY) > maxWheelDeltaPx) {
+          const excess = Math.abs(data.deltaY) - maxWheelDeltaPx;
+          data.deltaY = Math.sign(data.deltaY) * (maxWheelDeltaPx + excess * 0.2);
+        }
+        return true;
+      },
     });
 
     lenisRef.current = lenis;
     setLenisInstance(lenis);
 
-    // Single requestAnimationFrame loop
+    // Single authoritative requestAnimationFrame loop driving both Lenis & timeline
     let rafId;
     function raf(time) {
       lenis.raf(time);
+      frameSubscribersRef.current.forEach((listener) => {
+        listener(time, lenis);
+      });
       rafId = requestAnimationFrame(raf);
     }
     rafId = requestAnimationFrame(raf);
@@ -75,14 +120,13 @@ export default function SmoothScroll({ children }) {
         e.preventDefault();
         lenis.scrollTo(targetElement, {
           offset: 0,
-          duration: prefersReducedMotion ? 0 : 1.2,
+          duration: prefersReducedMotion ? 0 : 1.3,
         });
       }
     };
 
     document.addEventListener('click', handleAnchorClick);
 
-    // Cleanup
     return () => {
       document.removeEventListener('click', handleAnchorClick);
       cancelAnimationFrame(rafId);
@@ -92,10 +136,17 @@ export default function SmoothScroll({ children }) {
     };
   }, [prefersReducedMotion]);
 
+  const contextValue = useMemo(
+    () => ({
+      lenis: lenisInstance,
+      subscribeFrame,
+    }),
+    [lenisInstance, subscribeFrame]
+  );
+
   return (
-    <SmoothScrollContext.Provider value={lenisInstance}>
+    <SmoothScrollContext.Provider value={contextValue}>
       {children}
     </SmoothScrollContext.Provider>
   );
 }
-

@@ -154,5 +154,27 @@ export const SCENE_CONFIG = [
  */
 export const SCROLL_SETTINGS = {
   totalScrollTrackVh: 700,
+  controller: {
+    // Responsive exponential smoothing factor for deliberate scrolling
+    normalLerpSpeed: 12.0,
+    // Steady forward speed cap after presentation window or within scene interior (progress/sec)
+    maxSteadyForwardVelocity: 0.22,
+    // Smooth, responsive backward scroll speed cap (progress/sec) — never locked by scene dwell
+    maxBackwardVelocity: 0.48,
+    // Brisk catch-up speed for direct scrollbar dragging and Home/End jumps (progress/sec)
+    directNavVelocity: 1.15,
+    // Soft cap on per-event wheel delta in Lenis virtualScroll before gentle compression
+    maxWheelDeltaPx: 95,
+    // Minimum meaningful presentation window (ms) per scene before advancing across its exit gate
+    minScenePresentationMs: {
+      opening: 1250,
+      varmala: 1750,
+      groom: 1350,
+      bride: 1350,
+      muhurtham: 1450,
+      venue: 1450,
+      blessings: 1200,
+    },
+  },
 };
 
