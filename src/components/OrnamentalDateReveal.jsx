@@ -49,11 +49,15 @@ export default function OrnamentalDateReveal({
           opacity: labelOpacity,
           y: labelY,
           fontFamily: 'var(--font-display)',
-          fontSize: isCompact ? '0.69rem' : 'clamp(0.68rem, 1.1vw, 0.82rem)',
-          letterSpacing: isCompact ? '0.18em' : '0.24em',
+          fontSize: isCompact
+            ? isShortViewport
+              ? '0.82rem'
+              : 'clamp(0.88rem, 3.5vw, 0.98rem)'
+            : 'clamp(0.76rem, 1.25vw, 0.9rem)',
+          letterSpacing: isCompact ? '0.15em' : '0.24em',
           color: 'var(--color-gold-light)',
           textTransform: 'uppercase',
-          marginBottom: isCompact ? '2px' : '4px',
+          marginBottom: isCompact ? '3px' : '4px',
           fontWeight: 600,
         }}
       >
@@ -68,10 +72,10 @@ export default function OrnamentalDateReveal({
           fontFamily: 'var(--font-display)',
           fontSize: isCompact
             ? isShortViewport
-              ? '0.96rem'
-              : '1.12rem'
-            : 'clamp(1.15rem, 2.4vw, 1.7rem)',
-          letterSpacing: isCompact ? '0.16em' : '0.18em',
+              ? '1.12rem'
+              : 'clamp(1.24rem, 4.6vw, 1.42rem)'
+            : 'clamp(1.25rem, 2.5vw, 1.78rem)',
+          letterSpacing: isCompact ? '0.15em' : '0.18em',
           color: 'var(--color-gold-bright)',
           textTransform: 'uppercase',
           fontWeight: 600,
@@ -102,9 +106,9 @@ export default function OrnamentalDateReveal({
             aria-hidden="true"
             style={{
               color: 'var(--color-antique-gold)',
-              fontSize: isCompact ? '1.15rem' : 'clamp(1.2rem, 3vw, 2.2rem)',
+              fontSize: isCompact ? '1.25rem' : 'clamp(1.25rem, 3vw, 2.2rem)',
               opacity: 0.65,
-              marginRight: isCompact ? '8px' : 'clamp(8px, 2vw, 16px)',
+              marginRight: isCompact ? '10px' : 'clamp(8px, 2vw, 16px)',
             }}
           >
             ❧
@@ -116,9 +120,9 @@ export default function OrnamentalDateReveal({
             fontFamily: 'var(--font-display)',
             fontSize: isCompact
               ? isShortViewport
-                ? 'clamp(3.1rem, 12vw, 3.7rem)'
-                : 'clamp(3.6rem, 13.5vw, 4.4rem)'
-              : 'clamp(4.2rem, 11vw, 7.6rem)',
+                ? 'clamp(3.35rem, 13vw, 3.9rem)'
+                : 'clamp(4.1rem, 15.5vw, 5.1rem)'
+              : 'clamp(4.4rem, 11vw, 7.6rem)',
             fontWeight: 700,
             lineHeight: 0.92,
             letterSpacing: '-0.02em',
@@ -137,9 +141,9 @@ export default function OrnamentalDateReveal({
             aria-hidden="true"
             style={{
               color: 'var(--color-antique-gold)',
-              fontSize: isCompact ? '1.15rem' : 'clamp(1.2rem, 3vw, 2.2rem)',
+              fontSize: isCompact ? '1.25rem' : 'clamp(1.25rem, 3vw, 2.2rem)',
               opacity: 0.65,
-              marginLeft: isCompact ? '8px' : 'clamp(8px, 2vw, 16px)',
+              marginLeft: isCompact ? '10px' : 'clamp(8px, 2vw, 16px)',
               transform: 'scaleX(-1)',
               display: 'inline-block',
             }}
@@ -157,10 +161,10 @@ export default function OrnamentalDateReveal({
           fontFamily: 'var(--font-display)',
           fontSize: isCompact
             ? isShortViewport
-              ? '0.96rem'
-              : 'clamp(1.04rem, 3.8vw, 1.2rem)'
-            : 'clamp(1.05rem, 2.2vw, 1.55rem)',
-          letterSpacing: isCompact ? '0.13em' : '0.16em',
+              ? '1.1rem'
+              : 'clamp(1.22rem, 4.4vw, 1.38rem)'
+            : 'clamp(1.15rem, 2.3vw, 1.62rem)',
+          letterSpacing: isCompact ? '0.12em' : '0.16em',
           color: 'var(--color-ivory)',
           textTransform: 'uppercase',
           fontWeight: 600,
@@ -180,12 +184,12 @@ export default function OrnamentalDateReveal({
           color: 'var(--color-gold-bright)',
           fontSize: isCompact
             ? isShortViewport
-              ? '0.8rem'
-              : '0.88rem'
-            : 'clamp(0.85rem, 1.5vw, 1.05rem)',
-          marginTop: isCompact ? '3px' : '6px',
+              ? '0.94rem'
+              : 'clamp(1.04rem, 3.9vw, 1.16rem)'
+            : 'clamp(0.95rem, 1.6vw, 1.12rem)',
+          marginTop: isCompact ? '4px' : '6px',
           fontWeight: 500,
-          letterSpacing: '0.03em',
+          letterSpacing: '0.02em',
           lineHeight: 1.35,
         }}
       >

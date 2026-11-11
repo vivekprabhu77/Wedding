@@ -79,7 +79,7 @@ export default function SequentialTextReveal({
         className="kannada-text"
         style={{
           opacity: kannadaOpacity,
-          fontSize: 'clamp(0.85rem, 1.4vw, 1.1rem)',
+          fontSize: 'clamp(1.02rem, 3.1vw, 1.2rem)',
           color: 'var(--color-gold-bright)',
           margin: '0 0 2px',
           fontWeight: 600,
@@ -95,7 +95,7 @@ export default function SequentialTextReveal({
             opacity: salutationOpacity,
             y: salutationY,
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(0.72rem, 1.2vw, 0.95rem)',
+            fontSize: 'clamp(0.86rem, 2.5vw, 1.02rem)',
             letterSpacing: '0.18em',
             color: 'var(--color-gold-light)',
             fontWeight: 600,
@@ -112,7 +112,7 @@ export default function SequentialTextReveal({
             opacity: nameOpacity,
             y: nameY,
             scale: nameScale,
-            fontSize: 'clamp(1.5rem, 3.8vw, 2.7rem)',
+            fontSize: 'clamp(1.75rem, 5.4vw, 2.75rem)',
             fontWeight: 700,
             letterSpacing: 'clamp(0.06em, 0.15vw, 0.12em)',
             color: 'var(--color-ivory)',
@@ -139,7 +139,7 @@ export default function SequentialTextReveal({
             y: roleY,
             fontFamily: 'var(--font-editorial)',
             fontStyle: 'italic',
-            fontSize: 'clamp(0.85rem, 1.3vw, 1.05rem)',
+            fontSize: 'clamp(1.04rem, 2.9vw, 1.18rem)',
             color: 'var(--color-champagne)',
             margin: '0 0 2px',
           }}
@@ -151,7 +151,7 @@ export default function SequentialTextReveal({
         <div
           style={{
             fontFamily: 'var(--font-editorial)',
-            fontSize: 'clamp(0.95rem, 1.6vw, 1.25rem)',
+            fontSize: 'clamp(1.12rem, 3.5vw, 1.32rem)',
             color: '#FFF2D6',
             lineHeight: 1.4,
             display: 'flex',
@@ -201,8 +201,8 @@ export default function SequentialTextReveal({
             opacity: placeOpacity,
             y: placeY,
             fontFamily: 'var(--font-display)',
-            fontSize: 'clamp(0.72rem, 1.1vw, 0.9rem)',
-            letterSpacing: 'var(--tracking-widest)',
+            fontSize: 'clamp(0.86rem, 2.5vw, 1.02rem)',
+            letterSpacing: '0.18em',
             color: 'var(--color-gold-light)',
             textTransform: 'uppercase',
             fontWeight: 600,
@@ -215,7 +215,7 @@ export default function SequentialTextReveal({
           style={{
             opacity: districtOpacity,
             color: 'rgba(182, 138, 67, 0.6)',
-            fontSize: '0.75rem',
+            fontSize: '0.85rem',
           }}
         >
           ·
@@ -227,7 +227,7 @@ export default function SequentialTextReveal({
             y: districtY,
             fontFamily: 'var(--font-editorial)',
             fontStyle: 'italic',
-            fontSize: 'clamp(0.85rem, 1.3vw, 1.05rem)',
+            fontSize: 'clamp(1.04rem, 2.9vw, 1.16rem)',
             color: 'var(--color-cream)',
           }}
         >

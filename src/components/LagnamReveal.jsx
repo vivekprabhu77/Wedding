@@ -64,8 +64,12 @@ export default function LagnamReveal({
         <span
           style={{
             fontFamily: 'var(--font-display)',
-            fontSize: isCompact ? '0.66rem' : 'clamp(0.65rem, 1vw, 0.74rem)',
-            letterSpacing: isCompact ? '0.18em' : '0.24em',
+            fontSize: isCompact
+              ? isShortViewport
+                ? '0.78rem'
+                : '0.86rem'
+              : 'clamp(0.72rem, 1.1vw, 0.82rem)',
+            letterSpacing: isCompact ? '0.15em' : '0.24em',
             color: 'var(--color-gold-light)',
             textTransform: 'uppercase',
             fontWeight: 600,
@@ -83,7 +87,7 @@ export default function LagnamReveal({
             gap: '7px',
           }}
         >
-          <span style={{ color: 'var(--color-antique-gold)', fontSize: '0.82rem' }} aria-hidden="true">
+          <span style={{ color: 'var(--color-antique-gold)', fontSize: '0.9rem' }} aria-hidden="true">
             ✻
           </span>
           <span
@@ -91,11 +95,11 @@ export default function LagnamReveal({
               fontFamily: 'var(--font-display)',
               fontSize: isCompact
                 ? isShortViewport
-                  ? '0.94rem'
-                  : 'clamp(1.02rem, 3.8vw, 1.18rem)'
-                : 'clamp(1.15rem, 2.4vw, 1.65rem)',
+                  ? '1.08rem'
+                  : 'clamp(1.18rem, 4.5vw, 1.34rem)'
+                : 'clamp(1.2rem, 2.4vw, 1.68rem)',
               fontWeight: 700,
-              letterSpacing: isCompact ? '0.11em' : '0.14em',
+              letterSpacing: isCompact ? '0.09em' : '0.14em',
               color: 'var(--color-gold-bright)',
               textTransform: 'uppercase',
               textShadow: '0 2px 8px rgba(0,0,0,0.7)',
@@ -103,7 +107,7 @@ export default function LagnamReveal({
           >
             {date.lagnam || 'MAKARA LAGNAM'}
           </span>
-          <span style={{ color: 'var(--color-antique-gold)', fontSize: '0.82rem' }} aria-hidden="true">
+          <span style={{ color: 'var(--color-antique-gold)', fontSize: '0.9rem' }} aria-hidden="true">
             ✻
           </span>
         </div>

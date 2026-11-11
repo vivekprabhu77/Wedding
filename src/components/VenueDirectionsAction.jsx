@@ -83,9 +83,9 @@ export default function VenueDirectionsAction({
             outlineOffset: '3px',
             borderRadius: '3px',
             fontFamily: 'var(--font-display)',
-            fontSize: isCompact ? '0.76rem' : '0.84rem',
+            fontSize: isCompact ? 'clamp(0.86rem, 3.4vw, 0.96rem)' : '0.88rem',
             fontWeight: 700,
-            letterSpacing: isCompact ? '0.14em' : '0.16em',
+            letterSpacing: isCompact ? '0.13em' : '0.16em',
             textTransform: 'uppercase',
             textDecoration: 'none',
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.4)',
@@ -138,9 +138,9 @@ export default function VenueDirectionsAction({
           fontStyle: 'italic',
           fontSize: isCompact
             ? isShortViewport
-              ? '0.86rem'
-              : 'clamp(0.9rem, 3.6vw, 0.98rem)'
-            : 'clamp(0.95rem, 1.5vw, 1.12rem)',
+              ? '0.98rem'
+              : 'clamp(1.08rem, 4.1vw, 1.24rem)'
+            : 'clamp(1.02rem, 1.6vw, 1.18rem)',
           color: 'var(--color-champagne, #E6D5B8)',
           letterSpacing: '0.02em',
           marginTop: isCompact ? (isShortViewport ? '8px' : '12px') : '10px',

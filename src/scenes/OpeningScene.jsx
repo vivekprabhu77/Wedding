@@ -138,7 +138,7 @@ export default function OpeningScene() {
             className="kannada-text"
             style={{
               color: 'var(--color-deep-maroon)',
-              fontSize: 'clamp(0.92rem, 1.8vw, 1.15rem)',
+              fontSize: 'clamp(1.06rem, 3.2vw, 1.25rem)',
               letterSpacing: '0.04em',
               fontWeight: 600,
               margin: '2px 0 10px',
@@ -152,7 +152,7 @@ export default function OpeningScene() {
             style={{
               fontFamily: 'var(--font-editorial)',
               fontStyle: 'italic',
-              fontSize: 'clamp(1.05rem, 1.9vw, 1.35rem)',
+              fontSize: 'clamp(1.22rem, 3.6vw, 1.45rem)',
               color: 'var(--color-deep-maroon)',
               lineHeight: 1.4,
               maxWidth: '480px',
@@ -168,7 +168,7 @@ export default function OpeningScene() {
           <p
             style={{
               fontFamily: 'var(--font-editorial)',
-              fontSize: 'clamp(0.95rem, 1.6vw, 1.2rem)',
+              fontSize: 'clamp(1.12rem, 3.2vw, 1.3rem)',
               color: '#3A141A',
               lineHeight: 1.5,
               maxWidth: '500px',
@@ -193,8 +193,8 @@ export default function OpeningScene() {
             <span
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: '0.62rem',
-                letterSpacing: 'var(--tracking-widest)',
+                fontSize: 'clamp(0.76rem, 2.2vw, 0.84rem)',
+                letterSpacing: '0.16em',
                 textTransform: 'uppercase',
                 color: 'var(--color-antique-gold)',
                 fontWeight: 600,

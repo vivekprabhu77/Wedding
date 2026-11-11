@@ -374,7 +374,7 @@ export default function VarmalaScene() {
             <h2
               className="editorial-display"
               style={{
-                fontSize: 'clamp(1.15rem, 2.5vw, 1.85rem)',
+                fontSize: 'clamp(1.25rem, 3.8vw, 1.9rem)',
                 color: '#FFF2D6',
                 fontWeight: 600,
                 letterSpacing: '0.06em',
@@ -389,7 +389,7 @@ export default function VarmalaScene() {
               style={{
                 fontFamily: 'var(--font-editorial)',
                 fontStyle: 'italic',
-                fontSize: 'clamp(0.85rem, 1.4vw, 1.1rem)',
+                fontSize: 'clamp(1.02rem, 3vw, 1.2rem)',
                 color: '#F8E7C0',
                 margin: 0,
               }}
@@ -414,8 +414,8 @@ export default function VarmalaScene() {
             <div
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(0.55rem, 0.9vw, 0.68rem)',
-                letterSpacing: 'var(--tracking-widest)',
+                fontSize: 'clamp(0.78rem, 2vw, 0.9rem)',
+                letterSpacing: '0.18em',
                 color: 'var(--color-gold-light)',
                 textTransform: 'uppercase',
                 opacity: 0.9,
@@ -427,7 +427,7 @@ export default function VarmalaScene() {
             <h2
               className="editorial-display"
               style={{
-                fontSize: 'clamp(1.15rem, 2.5vw, 1.85rem)',
+                fontSize: 'clamp(1.25rem, 3.8vw, 1.9rem)',
                 color: '#FFF2D6',
                 fontWeight: 600,
                 letterSpacing: '0.06em',
@@ -442,7 +442,7 @@ export default function VarmalaScene() {
               style={{
                 fontFamily: 'var(--font-editorial)',
                 fontStyle: 'italic',
-                fontSize: 'clamp(0.85rem, 1.4vw, 1.1rem)',
+                fontSize: 'clamp(1.02rem, 3vw, 1.2rem)',
                 color: '#F8E7C0',
                 margin: 0,
               }}
@@ -467,8 +467,8 @@ export default function VarmalaScene() {
             <div
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(0.55rem, 0.9vw, 0.68rem)',
-                letterSpacing: 'var(--tracking-widest)',
+                fontSize: 'clamp(0.78rem, 2vw, 0.9rem)',
+                letterSpacing: '0.18em',
                 color: 'var(--color-gold-light)',
                 textTransform: 'uppercase',
                 opacity: 0.9,
@@ -480,7 +480,7 @@ export default function VarmalaScene() {
             <h2
               className="editorial-display"
               style={{
-                fontSize: 'clamp(1.15rem, 2.5vw, 1.85rem)',
+                fontSize: 'clamp(1.25rem, 3.8vw, 1.9rem)',
                 color: '#FFF2D6',
                 fontWeight: 600,
                 letterSpacing: '0.06em',
@@ -495,7 +495,7 @@ export default function VarmalaScene() {
               style={{
                 fontFamily: 'var(--font-editorial)',
                 fontStyle: 'italic',
-                fontSize: 'clamp(0.85rem, 1.4vw, 1.1rem)',
+                fontSize: 'clamp(1.02rem, 3vw, 1.2rem)',
                 color: '#F8E7C0',
                 margin: 0,
               }}
@@ -522,7 +522,7 @@ export default function VarmalaScene() {
               className="sanskrit-text"
               style={{
                 color: 'var(--color-gold-light)',
-                fontSize: 'clamp(0.72rem, 1.25vw, 0.98rem)',
+                fontSize: 'clamp(0.9rem, 2.5vw, 1.06rem)',
                 lineHeight: 1.4,
                 fontWeight: 500,
                 fontStyle: 'italic',
@@ -538,9 +538,9 @@ export default function VarmalaScene() {
               className="couple-grand-title"
               style={{
                 fontFamily: 'var(--font-display)',
-                fontSize: 'clamp(0.92rem, 3.4vw, 2.2rem)',
+                fontSize: 'clamp(1.04rem, 4.3vw, 2.25rem)',
                 fontWeight: 700,
-                letterSpacing: 'clamp(0.06em, 0.2vw, 0.16em)',
+                letterSpacing: 'clamp(0.03em, 0.16vw, 0.16em)',
                 color: 'var(--color-gold-light)',
                 textTransform: 'uppercase',
                 margin: '1px 0 3px',
@@ -557,7 +557,7 @@ export default function VarmalaScene() {
             <p
               style={{
                 fontFamily: 'var(--font-editorial)',
-                fontSize: 'clamp(0.75rem, 1.2vw, 0.95rem)',
+                fontSize: 'clamp(0.92rem, 2.6vw, 1.08rem)',
                 color: 'var(--color-cream)',
                 fontStyle: 'italic',
                 margin: 0,

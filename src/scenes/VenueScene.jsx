@@ -149,9 +149,11 @@ export default function VenueScene() {
               y: reducedMotion ? 0 : headingY,
               fontFamily: 'var(--font-display)',
               fontSize: isCompact
-                ? '0.69rem'
-                : 'clamp(0.74rem, 1.15vw, 0.88rem)',
-              letterSpacing: isCompact ? '0.18em' : '0.24em',
+                ? isShortViewport
+                  ? '0.8rem'
+                  : 'clamp(0.86rem, 3.3vw, 0.98rem)'
+                : 'clamp(0.78rem, 1.25vw, 0.92rem)',
+              letterSpacing: isCompact ? '0.15em' : '0.24em',
               color: 'var(--color-gold-light)',
               textTransform: 'uppercase',
               fontWeight: 600,
@@ -199,13 +201,13 @@ export default function VenueScene() {
                 opacity: nameLine1Opacity,
                 y: reducedMotion ? 0 : nameLine1Y,
                 fontSize: isUltraNarrow
-                  ? '0.84rem'
+                  ? '0.94rem'
                   : isCompact
-                    ? 'clamp(0.92rem, 3.6vw, 1.14rem)'
-                    : 'clamp(1.36rem, 2.4vw, 1.88rem)',
+                    ? 'clamp(1.06rem, 4.1vw, 1.32rem)'
+                    : 'clamp(1.4rem, 2.5vw, 1.92rem)',
                 fontWeight: 700,
                 letterSpacing: isUltraNarrow
-                  ? '0.02em'
+                  ? '0.015em'
                   : isCompact
                     ? '0.03em'
                     : '0.08em',
@@ -225,12 +227,12 @@ export default function VenueScene() {
                 opacity: nameLine2Opacity,
                 y: reducedMotion ? 0 : nameLine2Y,
                 fontSize: isUltraNarrow
-                  ? '0.78rem'
+                  ? '0.86rem'
                   : isCompact
-                    ? 'clamp(0.84rem, 3.15vw, 1.02rem)'
-                    : 'clamp(1.12rem, 1.9vw, 1.48rem)',
+                    ? 'clamp(0.96rem, 3.7vw, 1.18rem)'
+                    : 'clamp(1.16rem, 2.0vw, 1.52rem)',
                 fontWeight: 600,
-                letterSpacing: isCompact ? '0.055em' : '0.12em',
+                letterSpacing: isCompact ? '0.05em' : '0.12em',
                 lineHeight: 1.24,
                 color: 'var(--color-gold-bright)',
                 textShadow: '0 2px 12px rgba(0, 0, 0, 0.7)',
@@ -275,10 +277,10 @@ export default function VenueScene() {
                 fontFamily: 'var(--font-display)',
                 fontSize: isCompact
                   ? isShortViewport
-                    ? '0.84rem'
-                    : 'clamp(0.9rem, 3.5vw, 1.02rem)'
-                  : 'clamp(1.02rem, 1.6vw, 1.24rem)',
-                letterSpacing: isCompact ? '0.18em' : '0.22em',
+                    ? '0.98rem'
+                    : 'clamp(1.08rem, 4.2vw, 1.24rem)'
+                  : 'clamp(1.08rem, 1.7vw, 1.28rem)',
+                letterSpacing: isCompact ? '0.16em' : '0.22em',
                 color: 'var(--color-ivory)',
                 fontWeight: 600,
               }}
@@ -293,10 +295,10 @@ export default function VenueScene() {
                 fontFamily: 'var(--font-editorial)',
                 fontSize: isCompact
                   ? isShortViewport
-                    ? '0.78rem'
-                    : 'clamp(0.84rem, 3.2vw, 0.94rem)'
-                  : 'clamp(0.95rem, 1.5vw, 1.12rem)',
-                letterSpacing: isCompact ? '0.12em' : '0.16em',
+                    ? '0.9rem'
+                    : 'clamp(1.0rem, 3.8vw, 1.12rem)'
+                  : 'clamp(1.0rem, 1.55vw, 1.16rem)',
+                letterSpacing: isCompact ? '0.1em' : '0.16em',
                 color: 'var(--color-gold-light)',
                 fontWeight: 500,
                 textTransform: 'uppercase',

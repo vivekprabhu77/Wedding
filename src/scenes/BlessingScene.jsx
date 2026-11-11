@@ -104,7 +104,7 @@ export default function BlessingScene() {
         <h2
           className="editorial-display"
           style={{
-            fontSize: 'clamp(1.5rem, 3.2vw, 2.4rem)',
+            fontSize: 'clamp(1.65rem, 4.4vw, 2.45rem)',
             color: 'var(--color-ivory)',
             fontWeight: 600,
             letterSpacing: '0.04em',
@@ -121,7 +121,7 @@ export default function BlessingScene() {
         <motion.p
           className="kannada-text"
           style={{
-            fontSize: 'clamp(1rem, 2vw, 1.35rem)',
+            fontSize: 'clamp(1.1rem, 3vw, 1.4rem)',
             color: 'var(--color-gold-bright)',
             lineHeight: 1.6,
             maxWidth: '560px',
@@ -137,7 +137,7 @@ export default function BlessingScene() {
           style={{
             fontFamily: 'var(--font-editorial)',
             fontStyle: 'italic',
-            fontSize: 'clamp(1.05rem, 1.8vw, 1.3rem)',
+            fontSize: 'clamp(1.14rem, 3.1vw, 1.34rem)',
             color: 'var(--color-champagne)',
             lineHeight: 1.55,
             maxWidth: '540px',
@@ -153,7 +153,7 @@ export default function BlessingScene() {
         <div
           className="editorial-display"
           style={{
-            fontSize: 'clamp(1rem, 1.8vw, 1.3rem)',
+            fontSize: 'clamp(1.15rem, 3.3vw, 1.38rem)',
             color: 'var(--color-ivory)',
             letterSpacing: 'var(--tracking-widest)',
             marginTop: '6px',
@@ -165,9 +165,9 @@ export default function BlessingScene() {
         <p
           style={{
             fontFamily: 'var(--font-editorial)',
-            fontSize: '0.92rem',
+            fontSize: 'clamp(1.02rem, 2.7vw, 1.12rem)',
             color: 'var(--color-gold-light)',
-            opacity: 0.8,
+            opacity: 0.85,
             marginTop: '4px',
           }}
         >

@@ -67,8 +67,12 @@ export default function MuhurthamTimeReveal({
           opacity: titleOpacity,
           y: titleY,
           fontFamily: 'var(--font-display)',
-          fontSize: isCompact ? '0.69rem' : 'clamp(0.72rem, 1.2vw, 0.88rem)',
-          letterSpacing: isCompact ? '0.2em' : '0.22em',
+          fontSize: isCompact
+            ? isShortViewport
+              ? '0.82rem'
+              : 'clamp(0.88rem, 3.5vw, 0.98rem)'
+            : 'clamp(0.8rem, 1.3vw, 0.92rem)',
+          letterSpacing: isCompact ? '0.16em' : '0.22em',
           color: 'var(--color-gold-light)',
           textTransform: 'uppercase',
           fontWeight: 600,
@@ -104,9 +108,9 @@ export default function MuhurthamTimeReveal({
             fontFamily: 'var(--font-display)',
             fontSize: isCompact
               ? isShortViewport
-                ? 'clamp(1.55rem, 6.2vw, 1.85rem)'
-                : 'clamp(1.8rem, 7vw, 2.2rem)'
-              : 'clamp(1.75rem, 4.2vw, 2.75rem)',
+                ? 'clamp(1.78rem, 7vw, 2.08rem)'
+                : 'clamp(2.1rem, 8vw, 2.6rem)'
+              : 'clamp(1.85rem, 4.2vw, 2.8rem)',
             fontWeight: 700,
             letterSpacing: '0.07em',
             lineHeight: 1.15,
