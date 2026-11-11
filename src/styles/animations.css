@@ -1,0 +1,92 @@
+/* ========================================================
+   CINEMATIC & ATMOSPHERIC ANIMATIONS
+   ======================================================== */
+
+/* Subtle golden shimmer for borders and highlights */
+@keyframes goldShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+/* Atmospheric diya/mandap warmth breathing */
+@keyframes ambientBreathe {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.05);
+  }
+}
+
+/* Gentle pulse for scroll cue */
+@keyframes gentlePulse {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translateY(6px);
+    opacity: 1;
+  }
+}
+
+/* Slow continuous rotation for sacred geometry / mandalas */
+@keyframes slowRotate {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Subtle particle drift */
+@keyframes particleDrift {
+  0% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate(15px, -20px) rotate(15deg);
+  }
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+}
+
+/* Helper animation classes */
+.anim-ambient-glow {
+  animation: ambientBreathe 8s ease-in-out infinite;
+}
+
+.anim-scroll-pulse {
+  animation: gentlePulse 2.4s ease-in-out infinite;
+}
+
+.anim-slow-spin {
+  animation: slowRotate 120s linear infinite;
+}
+
+/* ========================================================
+   ACCESSIBILITY: REDUCED MOTION PREFERENCES
+   ======================================================== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  .anim-ambient-glow,
+  .anim-scroll-pulse,
+  .anim-slow-spin {
+    animation: none !important;
+  }
+}
+

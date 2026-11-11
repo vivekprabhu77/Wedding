@@ -1,0 +1,78 @@
+:root {
+  /* ========================================================
+     PRIMARY COLOR TOKENS
+     ======================================================== */
+  --color-ivory: #F8F3E9;
+  --color-ivory-soft: #F2EADA;
+  --color-antique-gold: #B68A43;
+  --color-gold-light: #DFBA73;
+  --color-gold-bright: #F5E5C0;
+  --color-gold-dark: #825F28;
+  --color-deep-maroon: #701F2A;
+  --color-maroon-dark: #4A121A;
+  --color-maroon-deepest: #27080D;
+  --color-temple-green: #263D30;
+  --color-temple-green-dark: #16241C;
+  --color-champagne: #E6D5B8;
+  --color-champagne-light: #F4ECE0;
+
+  /* Semantic UI Tokens */
+  --color-bg-primary: var(--color-deep-maroon);
+  --color-bg-secondary: var(--color-maroon-dark);
+  --color-text-primary: var(--color-ivory);
+  --color-text-secondary: var(--color-champagne);
+  --color-text-muted: rgba(248, 243, 233, 0.65);
+  --color-accent-gold: var(--color-antique-gold);
+  --color-border-ornament: rgba(182, 138, 67, 0.45);
+  --color-border-subtle: rgba(230, 213, 184, 0.18);
+
+  /* ========================================================
+     TYPOGRAPHY
+     ======================================================== */
+  --font-display: 'Cinzel', 'Playfair Display', Georgia, serif;
+  --font-editorial: 'Cormorant Garamond', 'Garamond', Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-kannada: 'Noto Serif Kannada', 'Tiro Kannada', serif;
+  --font-sanskrit: 'Noto Serif Devanagari', 'Tiro Devanagari Hindi', serif;
+
+  /* Font Weights */
+  --weight-light: 300;
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Letter Spacing */
+  --tracking-tight: -0.015em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.08em;
+  --tracking-widest: 0.22em;
+
+  /* ========================================================
+     ELEVATION & Z-INDEX LAYERING
+     ======================================================== */
+  --z-background: 0;
+  --z-ambient-glow: 5;
+  --z-scene-content: 10;
+  --z-particles: 15;
+  --z-ornamental-frame: 20;
+  --z-timeline-hud: 30;
+  --z-floating-controls: 40;
+  --z-modal-overlay: 50;
+
+  /* ========================================================
+     CINEMATIC VIEWPORT TOKENS
+     ======================================================== */
+  --viewport-max-width: 1440px;
+  --viewport-content-width: 1080px;
+  --frame-inset: clamp(12px, 2.5vw, 28px);
+  --frame-border-width: 1px;
+
+  /* Transitions & Timing */
+  --ease-cinematic: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-gentle: cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-fast: 200ms var(--ease-gentle);
+  --transition-medium: 400ms var(--ease-cinematic);
+  --transition-slow: 750ms var(--ease-cinematic);
+}
+
