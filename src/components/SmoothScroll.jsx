@@ -69,10 +69,10 @@ export default function SmoothScroll({ children }) {
     if (typeof window === 'undefined') return undefined;
 
     const ctrlCfg = SCROLL_SETTINGS.controller || {};
-    const lenisDuration = ctrlCfg.lenisDuration ?? 0.42;
-    const wheelSensitivity = ctrlCfg.wheelSensitivity ?? 0.9;
-    const maxInputPerEventPx = ctrlCfg.maxInputPerEventPx ?? 260;
-    const softKneeInputPx = ctrlCfg.softKneeInputPx ?? 110;
+    const lenisDuration = ctrlCfg.lenisDuration ?? 0.36;
+    const wheelSensitivity = ctrlCfg.wheelSensitivity ?? 1.72;
+    const maxInputPerEventPx = ctrlCfg.maxInputPerEventPx ?? 680;
+    const softKneeInputPx = ctrlCfg.softKneeInputPx ?? 260;
 
     const lenis = new Lenis({
       duration: prefersReducedMotion ? 0 : lenisDuration,
@@ -90,12 +90,15 @@ export default function SmoothScroll({ children }) {
         if (prefersReducedMotion || !data || !data.event) return true;
         if (data.event.type === 'wheel' && data.deltaY !== 0) {
           const dir = Math.sign(data.deltaY);
-          let mag = Math.abs(data.deltaY);
+          // Scale delta mildly with viewport height so 2 scrolls travel the same % across 700vh on 800p-4K
+          const heightScale = Math.min(2.0, Math.max(1.0, window.innerHeight / 800));
+          let mag = Math.abs(data.deltaY) * heightScale;
 
-          // Soft knee compression for extreme single-event wheel spikes without starving normal scrolls
-          if (mag > softKneeInputPx) {
-            const excess = mag - softKneeInputPx;
-            mag = Math.min(maxInputPerEventPx, softKneeInputPx + excess * 0.45);
+          const scaledKnee = softKneeInputPx * heightScale;
+          const scaledMax = maxInputPerEventPx * heightScale;
+          if (mag > scaledKnee) {
+            const excess = mag - scaledKnee;
+            mag = Math.min(scaledMax, scaledKnee + excess * 0.45);
           }
 
           data.deltaY = dir * Math.max(0.5, mag);

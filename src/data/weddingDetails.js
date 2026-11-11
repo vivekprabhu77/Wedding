@@ -159,26 +159,27 @@ export const SCROLL_SETTINGS = {
   controller: {
     // Baseline & scene-calibrated constant cruise playback velocities (progress/sec)
     cruiseVelocity: 0.048,
+    transitionBridgeVelocity: 0.082,
     cruiseVelocityByScene: {
-      opening: 0.054,
-      varmala: 0.056,
-      groom: 0.042,
-      bride: 0.042,
-      muhurtham: 0.046,
-      venue: 0.048,
-      blessings: 0.056,
+      opening: 0.056,
+      varmala: 0.058,
+      groom: 0.044,
+      bride: 0.044,
+      muhurtham: 0.048,
+      venue: 0.050,
+      blessings: 0.058,
     },
     // Smooth acceleration & braking envelope (eliminates abrupt starts/stops or exit dashes)
-    accelerationPerSec2: 0.22,
-    decelerationPerSec2: 0.24,
-    settleSmoothing: 12.0,
+    accelerationPerSec2: 0.26,
+    decelerationPerSec2: 0.26,
+    settleSmoothing: 13.0,
     // Reverse playback speed (progress/sec): responsive backward scrolling without trapping
-    maxReverseVelocity: 0.52,
+    maxReverseVelocity: 0.54,
     // Controlled velocity for explicit direct jumps (Home / End / native scrollbar drag)
     directNavVelocity: 1.25,
-    // Lenis wheel / trackpad normalization (natural 1:1 feel with soft extreme-spike protection)
-    lenisDuration: 0.42,
-    wheelSensitivity: 1.0,
+    // Lenis wheel / trackpad normalization (2 comfortable wheel scrolls move smoothly to next scene)
+    lenisDuration: 0.36,
+    wheelSensitivity: 1.72,
     maxInputPerEventPx: 680,
     softKneeInputPx: 260,
     // Max queued lead per isolated aggressive wheel/touch burst (~1.4 scenes ahead)
@@ -189,33 +190,33 @@ export const SCROLL_SETTINGS = {
     scenes: {
       opening: {
         milestones: [
-          { id: 'opening-card', atLocal: 0.35, gateLocal: 0.70, minReadableMs: 1100 },
+          { id: 'opening-card', atLocal: 0.35, gateLocal: 0.70, minReadableMs: 1000 },
         ],
       },
       varmala: {
         milestones: [
-          { id: 'varmala-garlands', atLocal: 0.56, gateLocal: 0.64, minReadableMs: 850 },
-          { id: 'varmala-couple-names', atLocal: 0.87, gateLocal: 0.90, minReadableMs: 1700 },
+          { id: 'varmala-garlands', atLocal: 0.56, gateLocal: 0.64, minReadableMs: 800 },
+          { id: 'varmala-couple-names', atLocal: 0.87, gateLocal: 0.90, minReadableMs: 1650 },
         ],
       },
       groom: {
         milestones: [
-          { id: 'groom-hometown-udupi', atLocal: 0.80, gateLocal: 0.855, minReadableMs: 1850 },
+          { id: 'groom-hometown-udupi', atLocal: 0.80, gateLocal: 0.855, minReadableMs: 1700 },
         ],
       },
       bride: {
         milestones: [
-          { id: 'bride-hometown-udupi', atLocal: 0.80, gateLocal: 0.855, minReadableMs: 1850 },
+          { id: 'bride-hometown-udupi', atLocal: 0.80, gateLocal: 0.855, minReadableMs: 1700 },
         ],
       },
       muhurtham: {
         milestones: [
-          { id: 'muhurtham-full-schedule', atLocal: 0.85, gateLocal: 0.868, minReadableMs: 1850 },
+          { id: 'muhurtham-full-schedule', atLocal: 0.85, gateLocal: 0.868, minReadableMs: 1700 },
         ],
       },
       venue: {
         milestones: [
-          { id: 'venue-full-directions', atLocal: 0.84, gateLocal: 0.865, minReadableMs: 1850 },
+          { id: 'venue-full-directions', atLocal: 0.84, gateLocal: 0.865, minReadableMs: 1700 },
         ],
       },
       blessings: {

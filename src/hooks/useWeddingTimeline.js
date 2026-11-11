@@ -401,8 +401,14 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
       const recentJumpKey = jumpKeyIsLatest && now - st.lastJumpKeyAt < 1500;
       const activeLenisObj = activeLenis || lenis;
       const isProgrammaticLenis = Boolean(activeLenisObj && activeLenisObj.isScrolling === 'smooth');
+      const isDirectionMismatchJump =
+        Math.abs(deltaRaw) > 0.02 &&
+        Math.sign(deltaRaw) !== st.lastInputDir &&
+        !st.isTouching &&
+        !isProgrammaticLenis &&
+        now >= st.reconcilingUntil;
 
-      if (st.isScrollbarPointerDown) {
+      if (st.isScrollbarPointerDown || isDirectionMismatchJump) {
         st.lastScrollbarAt = now;
         st.activeDirectNav = true;
       } else if (
@@ -453,7 +459,7 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
         } else if (rawTarget <= 0.001) {
           st.controlledTarget = 0;
         } else {
-          st.controlledTarget = clamp01(Math.min(rawTarget, st.controlledTarget + deltaRaw));
+          st.controlledTarget = clamp01(rawTarget);
         }
         st.gestureAnchor = Math.min(st.gestureAnchor, st.controlledTarget);
       } else if (deltaRaw > 0) {
@@ -493,9 +499,9 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
         !st.isTouching &&
         !isProgrammaticLenis &&
         now >= st.reconcilingUntil &&
-        now - st.lastWheelAt > 240 &&
-        now - st.lastTouchAt > 300 &&
-        now - st.lastRawChangeAt > 200 &&
+        now - st.lastWheelAt > 620 &&
+        now - st.lastTouchAt > 620 &&
+        now - st.lastRawChangeAt > 350 &&
         rawTarget > st.controlledTarget + 0.015
       ) {
         reconcileLenisToTarget(activeLenisObj, st.controlledTarget, now);
@@ -577,7 +583,16 @@ export function WeddingTimelineProvider({ scrollYProgress, children }) {
           nextDisplayed = Math.max(curDisplayed, effectiveTarget);
           st.velocity = 0;
         } else {
-          const sceneCruiseVel = cfg.cruiseVelocityByScene[curScene.id] ?? cfg.cruiseVelocity;
+          const baseSceneVel = cfg.cruiseVelocityByScene[curScene.id] ?? cfg.cruiseVelocity;
+          const isPostReadExitBridge =
+            !isGated &&
+            milestones.length > 0 &&
+            localNow >= (milestones[milestones.length - 1].gateLocal - 0.01);
+          const isEnteringPreContent = curSceneIdx > 0 && localNow < 0.14;
+          const sceneCruiseVel =
+            isPostReadExitBridge || isEnteringPreContent
+              ? Math.max(baseSceneVel, cfg.transitionBridgeVelocity ?? 0.082)
+              : baseSceneVel;
           // Smooth parabolic braking cushion so arriving at a gate or resting target never jerks
           const brakingLimit = Math.sqrt(2 * cfg.decelerationPerSec2 * effectiveGap);
           const settleLimit = effectiveGap * cfg.settleSmoothing;
